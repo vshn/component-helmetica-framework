@@ -1,5 +1,47 @@
 parameters:
   helmetica_framework:
     =_metadata:
-      multi_tenant: true
+      multi_tenant: false
     namespace: syn-helmetica-framework
+
+    images:
+      chrysopoeia:
+        registry: ghcr.io
+        repository: helmetica-framework/chrysopoeia
+        tag: v0.1.0-dev2
+      flux-source-controller:
+        registry: ghcr.io
+        repository: fluxcd/source-controller
+        tag: v1.9.0
+      flux-image-reflector-controller:
+        registry: ghcr.io
+        repository: fluxcd/image-reflector-controller
+        tag: v1.2.0
+      flux-helm-controller:
+        registry: ghcr.io
+        repository: fluxcd/helm-controller
+        tag: v1.6.3
+
+    flux:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/chrysopoeia/config/flux
+        version: ${helmetica_framework:images:chrysopoeia:tag}
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    chrysopoeia_controller:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/chrysopoeia/config/default
+        version: ${helmetica_framework:images:chrysopoeia:tag}
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    chrysopoeia_proxy:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/chrysopoeia/config/proxy
+        version: main
+        input:
+          namespace: ${helmetica_framework:namespace}
