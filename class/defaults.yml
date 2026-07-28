@@ -1,0 +1,5 @@
+parameters:
+  helmetica_framework:
+    =_metadata:
+      multi_tenant: true
+    namespace: syn-helmetica-framework

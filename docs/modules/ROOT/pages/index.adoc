@@ -1,0 +1,5 @@
+= helmetica-framework
+
+helmetica-framework is a Commodore component to manage helmetica-framework.
+
+See the xref:references/parameters.adoc[parameters] reference for further details.
