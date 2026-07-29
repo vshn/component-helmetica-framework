@@ -3,7 +3,15 @@ local inv = kap.inventory();
 local params = inv.parameters.helmetica_framework;
 local argocd = import 'lib/argocd.libjsonnet';
 
-local app = argocd.App('helmetica-framework', params.namespace);
+local app = argocd.App('helmetica-framework', params.namespace) {
+  spec+: {
+    syncPolicy+: {
+      syncOptions+: [
+        'ServerSideApply=true',
+      ],
+    },
+  },
+};
 
 local appPath =
   local project = std.get(std.get(app, 'spec', {}), 'project', 'syn');
