@@ -8,7 +8,7 @@ parameters:
       chrysopoeia:
         registry: ghcr.io
         repository: helmetica-framework/chrysopoeia
-        tag: v0.1.0-dev2
+        tag: v0.1.0-dev7
       flux-source-controller:
         registry: ghcr.io
         repository: fluxcd/source-controller
