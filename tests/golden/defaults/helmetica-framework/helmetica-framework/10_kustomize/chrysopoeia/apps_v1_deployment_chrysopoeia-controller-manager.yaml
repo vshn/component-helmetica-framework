@@ -30,6 +30,7 @@ spec:
         - --metrics-bind-address=:8443
         - --leader-elect
         - --metrics-cert-path=/tmp/k8s-metrics-server/metrics-certs
+        - --image-reflector-controller-hostname=image-reflector-controller-tags:8090
         env:
         - name: POD_NAMESPACE
           valueFrom:

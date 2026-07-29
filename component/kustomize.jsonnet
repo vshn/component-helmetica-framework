@@ -56,6 +56,25 @@ local controller = com.Kustomization(
   },
   {
     patchesStrategicMerge: [ removeUpstreamNamespace('system') ],
+    patches: [
+      {
+        target: {
+          kind: 'Deployment',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'test',
+            path: '/spec/template/spec/containers/0/name',
+            value: 'manager',
+          },
+          {
+            op: 'add',
+            path: '/spec/template/spec/containers/0/args/-',
+            value: '--image-reflector-controller-hostname=image-reflector-controller-tags:8090',
+          },
+        ]),
+      },
+    ],
   } + com.makeMergeable(params.chrysopoeia_controller.kustomize.input),
 );
 
