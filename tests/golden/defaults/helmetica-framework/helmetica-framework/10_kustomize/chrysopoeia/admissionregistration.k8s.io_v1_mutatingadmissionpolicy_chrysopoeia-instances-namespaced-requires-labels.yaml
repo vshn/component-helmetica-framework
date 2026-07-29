@@ -8,7 +8,7 @@ metadata:
       It copies the labels from the namespace to the resource being created.
 
       This allows the chrysopoeia proxy to filter access for operators that require cluster scoped access.
-  name: chrysopoeia-chrysopoeia-instances-namespaced-requires-labels
+  name: chrysopoeia-instances-namespaced-requires-labels
   namespace: syn-helmetica-framework
 spec:
   failurePolicy: Fail

@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingAdmissionPolicyBinding
 metadata:
-  name: chrysopoeia-chrysopoeia-instances-namespaced-requires-labels
+  name: chrysopoeia-instances-namespaced-requires-labels
   namespace: syn-helmetica-framework
 spec:
   policyName: chrysopoeia-instances-namespaced-requires-labels
