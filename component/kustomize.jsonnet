@@ -37,6 +37,14 @@ local flux = com.Kustomization(
   } + com.makeMergeable(params.flux.kustomize.input),
 );
 
+local crds = com.Kustomization(
+  params.chrysopoeia_crds.kustomize.manifest,
+  params.chrysopoeia_crds.kustomize.version,
+  {
+  },
+  {} + com.makeMergeable(params.chrysopoeia_crds.kustomize.input),
+);
+
 local controller = com.Kustomization(
   params.chrysopoeia_controller.kustomize.manifest,
   params.chrysopoeia_controller.kustomize.version,
@@ -78,11 +86,13 @@ local proxy = com.Kustomization(
 
 
 {
+  '07_chrysopoeia_crds/kustomization': crds.kustomization,
   '17_flux/kustomization': flux.kustomization,
   '18_chrysopoeia_controller/kustomization': controller.kustomization,
   '19_chrysopoeia_proxy/kustomization': proxy.kustomization,
   kustomization: {
     resources: [
+      '07_chrysopoeia_crds',
       '17_flux',
       '18_chrysopoeia_controller',
       '19_chrysopoeia_proxy',

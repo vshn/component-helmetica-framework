@@ -21,22 +21,6 @@ rules:
   verbs:
   - update
 - apiGroups:
-  - chrysopoeia.io
-  resources:
-  - customresourcedefinitionsources
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - chrysopoeia.io
-  resources:
-  - customresourcedefinitionsources/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
   - helm.toolkit.fluxcd.io
   resources:
   - helmreleases
@@ -49,6 +33,23 @@ rules:
 - apiGroups:
   - helmetica.io
   resources:
+  - customresourcedefinitionsources
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - helmetica.io
+  resources:
+  - customresourcedefinitionsources/status
+  - instancerevisions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - helmetica.io
+  resources:
   - instancerevisions
   verbs:
   - create
@@ -57,14 +58,6 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - helmetica.io
-  resources:
-  - instancerevisions/status
-  verbs:
-  - get
-  - patch
-  - update
 - apiGroups:
   - image.toolkit.fluxcd.io
   resources:

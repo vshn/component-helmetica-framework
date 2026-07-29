@@ -26,15 +26,25 @@ parameters:
       deployed: true
       kustomize:
         manifest: https://github.com/helmetica-framework/chrysopoeia/config/flux
-        version: ${helmetica_framework:images:chrysopoeia:tag}
+        # version: ${helmetica_framework:images:chrysopoeia:tag}
+        version: main
         input:
           namespace: ${helmetica_framework:namespace}
+
+    chrysopoeia_crds:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/chrysopoeia/config/crd
+        # version: ${helmetica_framework:images:chrysopoeia:tag}
+        version: main
+        input: {}
 
     chrysopoeia_controller:
       deployed: true
       kustomize:
         manifest: https://github.com/helmetica-framework/chrysopoeia/config/default
-        version: ${helmetica_framework:images:chrysopoeia:tag}
+        # version: ${helmetica_framework:images:chrysopoeia:tag}
+        version: main
         input:
           namespace: ${helmetica_framework:namespace}
 
@@ -42,6 +52,7 @@ parameters:
       deployed: true
       kustomize:
         manifest: https://github.com/helmetica-framework/chrysopoeia/config/proxy
+        # version: ${helmetica_framework:images:chrysopoeia:tag}
         version: main
         input:
           namespace: ${helmetica_framework:namespace}
