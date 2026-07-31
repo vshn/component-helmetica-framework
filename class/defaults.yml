@@ -42,7 +42,8 @@ parameters:
       deployed: true
       kustomize:
         manifest: https://github.com/helmetica-framework/chrysopoeia/config/default
-        version: ${helmetica_framework:images:chrysopoeia:tag}
+        # version: ${helmetica_framework:images:chrysopoeia:tag}
+        version: main
         input:
           namespace: ${helmetica_framework:namespace}
 
