@@ -2,3 +2,4 @@ spec:
   syncPolicy:
     syncOptions:
       - ServerSideApply=true
+      - CreateNamespace=true
