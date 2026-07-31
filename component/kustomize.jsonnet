@@ -74,6 +74,24 @@ local controller = com.Kustomization(
           },
         ]),
       },
+      {
+        target: {
+          group: 'cert-manager.io',
+          version: 'v1',
+          kind: 'Certificate',
+          name: 'chrysopoeia-metrics-certs',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'replace',
+            path: '/spec/dnsNames',
+            value: [
+              'chrysopoeia-controller-manager-metrics-service.%s.svc' % params.namespace,
+              'chrysopoeia-controller-manager-metrics-service.%s.svc.cluster.local' % params.namespace,
+            ],
+          },
+        ]),
+      },
     ],
   } + com.makeMergeable(params.chrysopoeia_controller.kustomize.input),
 );
@@ -99,6 +117,26 @@ local proxy = com.Kustomization(
           namespace: 'chrysopoeia-proxy-system',
         },
       }),
+    ],
+    patches: [
+      {
+        target: {
+          group: 'cert-manager.io',
+          version: 'v1',
+          kind: 'Certificate',
+          name: 'chrysopoeia-proxy-serving-cert',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'replace',
+            path: '/spec/dnsNames',
+            value: [
+              'chrysopoeia-proxy.%s.svc' % params.namespace,
+              'chrysopoeia-proxy.%s.svc.cluster.local' % params.namespace,
+            ],
+          },
+        ]),
+      },
     ],
   } + com.makeMergeable(params.chrysopoeia_proxy.kustomize.input),
 );

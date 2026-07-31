@@ -8,8 +8,8 @@ metadata:
   namespace: syn-helmetica-framework
 spec:
   dnsNames:
-  - chrysopoeia-proxy.chrysopoeia-proxy-system.svc
-  - chrysopoeia-proxy.chrysopoeia-proxy-system.svc.cluster.local
+  - chrysopoeia-proxy.syn-helmetica-framework.svc
+  - chrysopoeia-proxy.syn-helmetica-framework.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: chrysopoeia-selfsigned-issuer
