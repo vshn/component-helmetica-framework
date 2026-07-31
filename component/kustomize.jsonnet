@@ -116,5 +116,35 @@ local proxy = com.Kustomization(
       '18_chrysopoeia_controller',
       '19_chrysopoeia_proxy',
     ],
+    patches: [
+      {
+        target: {
+          kind: 'MutatingAdmissionPolicy',
+        },
+        patch: std.manifestJson({
+          '$patch': 'delete',
+          apiVersion: 'admissionregistration.k8s.io/v1',
+          kind: 'MutatingAdmissionPolicy',
+          metadata: {
+            name: 'chrysopoeia-instances-namespaced-requires-labels',
+            namespace: 'syn-helmetica-framework',
+          },
+        }),
+      },
+      {
+        target: {
+          kind: 'MutatingAdmissionPolicyBinding',
+        },
+        patch: std.manifestJson({
+          '$patch': 'delete',
+          apiVersion: 'admissionregistration.k8s.io/v1',
+          kind: 'MutatingAdmissionPolicyBinding',
+          metadata: {
+            name: 'chrysopoeia-instances-namespaced-requires-labels',
+            namespace: 'syn-helmetica-framework',
+          },
+        }),
+      },
+    ],
   },
 }
