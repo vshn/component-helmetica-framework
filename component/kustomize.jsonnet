@@ -111,6 +111,9 @@ local proxy = com.Kustomization(
   '19_chrysopoeia_proxy/kustomization': proxy.kustomization,
   kustomization: {
     resources: [
+      'https://raw.githubusercontent.com/helmetica-framework/chrysopoeia/%(version)s/config/proxy/permission-label-map-espejote.yaml' % {
+        version: params.chrysopoeia_proxy.kustomize.version,
+      },
       '07_chrysopoeia_crds',
       '17_flux',
       '18_chrysopoeia_controller',
