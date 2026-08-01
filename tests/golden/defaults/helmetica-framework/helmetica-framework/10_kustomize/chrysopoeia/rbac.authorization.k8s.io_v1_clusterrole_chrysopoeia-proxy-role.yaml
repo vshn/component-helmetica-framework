@@ -30,3 +30,11 @@ rules:
   - '*'
   verbs:
   - impersonate
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+  - watch
