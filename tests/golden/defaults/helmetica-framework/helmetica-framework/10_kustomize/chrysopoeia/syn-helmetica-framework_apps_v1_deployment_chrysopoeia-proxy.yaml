@@ -28,8 +28,22 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         image: ghcr.io/helmetica-framework/chrysopoeia:v0.1.0-dev15
+        livenessProbe:
+          httpGet:
+            path: /_healthz
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 20
         name: proxy
         ports: []
+        readinessProbe:
+          httpGet:
+            path: /_readyz
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 10
         resources:
           limits:
             cpu: 100m

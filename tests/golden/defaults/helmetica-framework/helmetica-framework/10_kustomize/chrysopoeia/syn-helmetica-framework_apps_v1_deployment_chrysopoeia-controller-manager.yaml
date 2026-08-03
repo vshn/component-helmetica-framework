@@ -31,6 +31,8 @@ spec:
         - --leader-elect
         - --metrics-cert-path=/tmp/k8s-metrics-server/metrics-certs
         - --image-reflector-controller-hostname=image-reflector-controller-tags:8090
+        - --harness-proxy-host=chrysopoeia-proxy.syn-helmetica-framework.svc
+        - --harness-proxy-ca-secret-namespace=syn-helmetica-framework
         env:
         - name: POD_NAMESPACE
           valueFrom:

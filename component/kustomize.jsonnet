@@ -72,6 +72,18 @@ local controller = com.Kustomization(
             path: '/spec/template/spec/containers/0/args/-',
             value: '--image-reflector-controller-hostname=image-reflector-controller-tags:8090',
           },
+          // The harness proxy runs in the component's namespace, not in the upstream
+          // chrysopoeia-proxy-system the flags default to.
+          {
+            op: 'add',
+            path: '/spec/template/spec/containers/0/args/-',
+            value: '--harness-proxy-host=chrysopoeia-proxy.%s.svc' % params.namespace,
+          },
+          {
+            op: 'add',
+            path: '/spec/template/spec/containers/0/args/-',
+            value: '--harness-proxy-ca-secret-namespace=%s' % params.namespace,
+          },
         ]),
       },
       {
@@ -88,6 +100,25 @@ local controller = com.Kustomization(
             value: [
               'chrysopoeia-controller-manager-metrics-service.%s.svc' % params.namespace,
               'chrysopoeia-controller-manager-metrics-service.%s.svc.cluster.local' % params.namespace,
+            ],
+          },
+        ]),
+      },
+      {
+        // Serves the pod mutating webhook of the OperatorHarness proxy injection.
+        target: {
+          group: 'cert-manager.io',
+          version: 'v1',
+          kind: 'Certificate',
+          name: 'chrysopoeia-serving-cert',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'replace',
+            path: '/spec/dnsNames',
+            value: [
+              'chrysopoeia-webhook-service.%s.svc' % params.namespace,
+              'chrysopoeia-webhook-service.%s.svc.cluster.local' % params.namespace,
             ],
           },
         ]),
