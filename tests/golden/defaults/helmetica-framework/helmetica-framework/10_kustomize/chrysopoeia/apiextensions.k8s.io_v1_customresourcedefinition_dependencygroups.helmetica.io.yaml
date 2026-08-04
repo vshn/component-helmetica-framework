@@ -1,0 +1,174 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.21.0
+  name: dependencygroups.helmetica.io
+spec:
+  group: helmetica.io
+  names:
+    kind: DependencyGroup
+    listKind: DependencyGroupList
+    plural: dependencygroups
+    singular: dependencygroup
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.state
+      name: State
+      type: string
+    - jsonPath: .spec.harnessRef.name
+      name: Harness
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    - jsonPath: .status.conditions[?(@.type=="Accepted")].message
+      name: Status
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          DependencyGroup is the Schema for the dependencygroups API.
+          It bundles the CustomResourceDefinitions of a service so that charts can depend on the group
+          instead of on individual CRDs, and ties them to the harness of the managing operator.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DependencyGroupSpec defines the desired state of DependencyGroup.
+            properties:
+              crds:
+                description: |-
+                  CRDs are the CustomResourceDefinitions that belong to this group.
+                  A CRD must not belong to more than one group, groups claiming an already claimed CRD are
+                  rejected. The CRDs do not have to exist yet.
+                items:
+                  description: DependencyGroupCRD identifies a CustomResourceDefinition
+                    belonging to a DependencyGroup.
+                  properties:
+                    name:
+                      description: Name is the fully qualified name of the CRD, as
+                        written in its `.metadata.name`.
+                      minLength: 1
+                      type: string
+                  required:
+                  - name
+                  type: object
+                minItems: 1
+                type: array
+                x-kubernetes-list-map-keys:
+                - name
+                x-kubernetes-list-type: map
+              harnessRef:
+                description: HarnessRef references the harness of the operator managing
+                  the CRDs of this group.
+                properties:
+                  kind:
+                    description: Kind of the referent.
+                    enum:
+                    - OperatorHarness
+                    type: string
+                  name:
+                    description: Name of the referent.
+                    minLength: 1
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+            required:
+            - crds
+            type: object
+          status:
+            description: DependencyGroupStatus defines the observed state of DependencyGroup.
+            properties:
+              conditions:
+                description: |-
+                  Conditions holds the conditions for the DependencyGroup. The Accepted condition carries the
+                  reason a group was rejected.
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              state:
+                description: |-
+                  State is Accepted if the group holds the claim on all of its CRDs, and Rejected otherwise.
+                  Only accepted groups may be referenced by a CustomResourceDefinitionSource.
+                enum:
+                - Accepted
+                - Rejected
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
