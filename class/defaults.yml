@@ -55,3 +55,7 @@ parameters:
         version: main
         input:
           namespace: ${helmetica_framework:namespace}
+
+    monitoring_stack:
+      # Observed on APPUiO Lab OCP 4.21.32 / Wed 23 Sep 2026 10:14:15 CEST
+      version: v0.87.0
