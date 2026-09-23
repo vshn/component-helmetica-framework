@@ -242,6 +242,12 @@ spec:
   probeNamespaceSelector:
     matchLabels:
       chrysopoeia.io/instance: ""
+  serviceMonitorSelector:
+    matchLabels:
+      chrysopoeia.io/instance: ""
+  podMonitorSelector:
+    matchLabels:
+      chrysopoeia.io/instance: ""
   shards: 1
   storage:
     volumeClaimTemplate:
