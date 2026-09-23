@@ -3,7 +3,17 @@ local inv = kap.inventory();
 local params = inv.parameters.helmetica_framework;
 local argocd = import 'lib/argocd.libjsonnet';
 
-local app = argocd.App('helmetica-framework', params.namespace);
+local app = argocd.App('helmetica-framework', params.namespace) + {
+  spec+: {
+    syncPolicy+: {
+      [if std.length(params.namespaceMetadata) != 0 then 'managedNamespaceMetadata']+: params.namespaceMetadata,
+      syncOptions+: [
+        'ServerSideApply=true',
+        'CreateNamespace=true',
+      ],
+    },
+  },
+};
 
 local appPath =
   local project = std.get(std.get(app, 'spec', {}), 'project', 'syn');
