@@ -159,7 +159,11 @@ spec:
             - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.87.0
             - --kubelet-endpoints=true
             - --kubelet-endpointslice=false
-            - --namespaces=swi-test-stack
+            - --prometheus-instance-namespaces=swi-test-stack
+            - --thanos-ruler-instance-namespaces=swi-test-stack
+            - --alertmanager-instance-namespaces=swi-test-stack
+            - --watch-referenced-objects-in-all-namespaces
+            - --controller-id=swi-test-stack/prometheus-operator
           env:
             - name: GOGC
               value: '30'
@@ -220,6 +224,8 @@ kind: Prometheus
 metadata:
   name: stack
   namespace: swi-test-stack
+  annotations:
+    operator.prometheus.io/controller-id: swi-test-stack/prometheus-operator
 spec:
   replicas: 1
   resources:
@@ -229,25 +235,27 @@ spec:
       cpu: "1"
       memory: 2Gi
   retention: 8d
-  ruleNamespaceSelector:
-    matchLabels:
-      chrysopoeia.io/instance: ""
-  ruleSelector: {}
   rules:
     alert: {}
   scrapeInterval: 30s
-  serviceMonitorNamespaceSelector:
+  podMonitorNamespaceSelector:
     matchLabels:
       chrysopoeia.io/instance: ""
   probeNamespaceSelector:
     matchLabels:
       chrysopoeia.io/instance: ""
-  serviceMonitorSelector:
+  ruleNamespaceSelector:
     matchLabels:
       chrysopoeia.io/instance: ""
-  podMonitorSelector:
+  scrapeConfigNamespaceSelector:
     matchLabels:
       chrysopoeia.io/instance: ""
+  serviceMonitorNamespaceSelector:
+    matchLabels:
+      chrysopoeia.io/instance: ""
+  serviceMonitorSelector: {}
+  podMonitorSelector: {}
+  ruleSelector: {}
   shards: 1
   storage:
     volumeClaimTemplate:
@@ -257,7 +265,7 @@ spec:
           requests:
             storage: 10Gi
       status: {}
-  version: 3.7.3
+  version: 3.15.0
   web:
     httpConfig:
       headers:
