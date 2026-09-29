@@ -238,6 +238,8 @@ spec:
   rules:
     alert: {}
   scrapeInterval: 30s
+  enforcedNamespaceLabel: namespace
+  ignoreNamespaceSelectors: true
   podMonitorNamespaceSelector:
     matchLabels:
       chrysopoeia.io/instance: ""
