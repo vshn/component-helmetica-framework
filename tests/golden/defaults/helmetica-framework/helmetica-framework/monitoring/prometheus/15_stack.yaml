@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus-stack
+  namespace: syn-helmetica-framework-monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: syn-helmetica-framework-monitoring:prometheus-stack
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - services
+      - nodes
+      - endpoints
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: syn-helmetica-framework-monitoring:helmetica-prometheus-stack
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: syn-helmetica-framework-monitoring:helmetica-prometheus-stack
+subjects:
+  - kind: ServiceAccount
+    name: prometheus-stack
+    namespace: syn-helmetica-framework-monitoring
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  annotations:
+    operator.prometheus.io/controller-id: syn-helmetica-framework-monitoring/prometheus-operator
+  name: stack
+  namespace: syn-helmetica-framework-monitoring
+spec:
+  enforcedNamespaceLabel: namespace
+  excludedFromEnforcement:
+    - namespace: syn-helmetica-framework-monitoring
+      resource: servicemonitors
+  ignoreNamespaceSelectors: false
+  image: quay.io/prometheus/prometheus:v3.15.0
+  podMonitorNamespaceSelector:
+    matchExpressions:
+      - key: helmetica.io/monitoring
+        operator: Exists
+  podMonitorSelector: {}
+  probeNamespaceSelector:
+    matchExpressions:
+      - key: helmetica.io/monitoring
+        operator: Exists
+  replicas: 1
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: '1'
+      memory: 2Gi
+  retention: 8d
+  ruleNamespaceSelector:
+    matchExpressions:
+      - key: helmetica.io/monitoring
+        operator: Exists
+  ruleSelector: {}
+  rules:
+    alert: {}
+  scrapeClasses:
+    - name: tls-client-certificate-auth
+      tlsConfig:
+        ca: {}
+        cert: {}
+        certFile: /etc/prometheus/secrets/ocp-metrics-client-certs/tls.crt
+        insecureSkipVerify: true
+        keyFile: /etc/prometheus/secrets/ocp-metrics-client-certs/tls.key
+  scrapeConfigNamespaceSelector:
+    matchExpressions:
+      - key: helmetica.io/monitoring
+        operator: Exists
+  scrapeInterval: 30s
+  secrets:
+    - ocp-metrics-client-certs
+  serviceAccountName: prometheus-stack
+  serviceMonitorNamespaceSelector:
+    matchExpressions:
+      - key: helmetica.io/monitoring
+        operator: Exists
+  serviceMonitorSelector: {}
+  shards: 1
+  storage:
+    volumeClaimTemplate:
+      metadata: {}
+      spec:
+        resources:
+          requests:
+            storage: 10Gi
+      status: {}
+  version: 3.15.0
+  web:
+    httpConfig:
+      headers:
+        contentSecurityPolicy: frame-ancestors 'none'

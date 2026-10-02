@@ -15,9 +15,9 @@ parameters:
         input_type: jsonnet
         output_path: helmetica-framework/
       - input_paths:
-          - ${_base_directory}/component/prometheus-operator.jsonnet
+          - ${_base_directory}/component/prometheus.jsonnet
         input_type: jsonnet
-        output_path: helmetica-framework/
+        output_path: helmetica-framework/monitoring/prometheus
       - input_paths:
           - ${_base_directory}/component/kustomize.jsonnet
         input_type: jsonnet
