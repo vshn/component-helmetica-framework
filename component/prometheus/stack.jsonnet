@@ -129,16 +129,8 @@ local trimPrefix(str, prefix) =
     spec: {
       serviceAccountName: 'prometheus-stack',
       replicas: 1,
-      resources: {
-        limits: {
-          memory: '2Gi',
-        },
-        requests: {
-          cpu: '1',
-          memory: '2Gi',
-        },
-      },
-      retention: '8d',
+      resources: params.monitoring_stack.resources,
+      retention: params.monitoring_stack.retention,
       rules: {
         alert: {},
       },

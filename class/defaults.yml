@@ -77,3 +77,11 @@ parameters:
       version: v0.87.0
       # Valid values: [talos, openshift4]
       platform: openshift4
+
+      retention: 8d
+      resources:
+        limits:
+          memory: '2Gi'
+        requests:
+          cpu: '1'
+          memory: '2Gi'
