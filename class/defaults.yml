@@ -22,6 +22,18 @@ parameters:
         registry: ghcr.io
         repository: fluxcd/helm-controller
         tag: v1.6.3
+      prometheus:
+        registry: quay.io
+        repository: prometheus/prometheus
+        tag: v3.15.0
+      prometheus-operator:
+        registry: quay.io
+        repository: prometheus-operator/prometheus-operator
+        tag: v0.87.0
+      prometheus-config-reloader:
+        registry: quay.io
+        repository: prometheus-operator/prometheus-config-reloader
+        tag: v0.87.0
 
     flux:
       deployed: true
@@ -55,3 +67,21 @@ parameters:
         version: main
         input:
           namespace: ${helmetica_framework:namespace}
+
+    monitoring_stack:
+      namespace: ${helmetica_framework:namespace}-monitoring
+      namespaceMetadata:
+        labels:
+          helmetica.io/monitoring: system
+      # Observed on APPUiO Lab OCP 4.21.32 / Wed 23 Sep 2026 10:14:15 CEST
+      version: v0.87.0
+      # Valid values: [talos, openshift4]
+      platform: openshift4
+
+      retention: 8d
+      resources:
+        limits:
+          memory: '2Gi'
+        requests:
+          cpu: '1'
+          memory: '2Gi'
