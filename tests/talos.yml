@@ -1,3 +1,5 @@
-# Overwrite parameters here
-
-# parameters: {...}
+parameters:
+  helmetica_framework:
+    monitoring_stack:
+      enabled: true
+      platform: talos
