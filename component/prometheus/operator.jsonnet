@@ -8,14 +8,6 @@ local params = inv.parameters.helmetica_framework;
 
 local operator = [
   {
-    apiVersion: 'v1',
-    kind: 'Namespace',
-    metadata: {
-      name: params.monitoring_stack.namespace,
-      labels: params.monitoring_stack.namespaceMetadata.labels,
-    },
-  },
-  {
     apiVersion: 'rbac.authorization.k8s.io/v1',
     kind: 'ClusterRoleBinding',
     metadata: {
