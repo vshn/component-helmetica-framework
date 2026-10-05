@@ -134,6 +134,7 @@ local trimPrefix(str, prefix) =
       enforcedNamespaceLabel: 'namespace',
       excludedFromEnforcement: [
         {
+          group: 'monitoring.coreos.com',
           namespace: params.monitoring_stack.namespace,
           resource: 'servicemonitors',
         },
