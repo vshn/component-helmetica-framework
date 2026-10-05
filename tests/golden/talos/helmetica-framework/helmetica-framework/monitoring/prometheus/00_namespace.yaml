@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    helmetica.io/monitoring: system
+    name: syn-helmetica-framework-monitoring
+  name: syn-helmetica-framework-monitoring

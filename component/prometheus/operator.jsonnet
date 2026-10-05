@@ -1,6 +1,6 @@
 // main template for helmetica-framework
+local kube = import 'kube-ssa-compat.libsonnet';
 local kap = import 'lib/kapitan.libjsonnet';
-local kube = import 'lib/kube.libjsonnet';
 local inv = kap.inventory();
 local prom = import 'common.libsonnet';
 // The hiera parameters for the component
