@@ -119,7 +119,6 @@ spec:
                     type: string
                 type: object
               provider:
-                default: generic
                 description: |-
                   The provider used for authentication, can be 'aws', 'azure', 'gcp' or 'generic'.
                   When not specified, defaults to 'generic'.
@@ -186,7 +185,6 @@ spec:
                   of this source.
                 type: boolean
               timeout:
-                default: 60s
                 description: The timeout for remote OCI Repository operations like
                   pulling, defaults to 60s.
                 pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m))+$
@@ -266,9 +264,6 @@ spec:
                 required:
                 - provider
                 type: object
-            required:
-            - interval
-            - url
             type: object
           status:
             default:
@@ -422,6 +417,11 @@ spec:
                 type: string
             type: object
         type: object
+        x-kubernetes-validations:
+        - message: spec.url is required
+          rule: has(self.spec) && has(self.spec.url)
+        - message: spec.interval is required
+          rule: has(self.spec) && has(self.spec.interval)
     served: true
     storage: true
     subresources:
