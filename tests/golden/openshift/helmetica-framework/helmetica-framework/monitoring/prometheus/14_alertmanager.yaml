@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager
+  namespace: syn-helmetica-framework-monitoring
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: syn-helmetica-framework-monitoring
+spec:
+  ports:
+    - name: web
+      port: 9093
+      targetPort: web
+    - name: reloader-web
+      port: 8080
+      targetPort: reloader-web
+  selector:
+    helmetica-monitoring-component: alertmanager
+  sessionAffinity: ClientIP
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  annotations:
+    operator.prometheus.io/controller-id: syn-helmetica-framework-monitoring/prometheus-operator
+  name: alertmanager
+  namespace: syn-helmetica-framework-monitoring
+spec:
+  alertmanagerConfigNamespaceSelector:
+    matchExpressions:
+      - key: helmetica.io/monitoring
+        operator: Exists
+  alertmanagerConfigSelector: {}
+  image: quay.io/prometheus/alertmanager:v0.31.1
+  podMetadata:
+    labels:
+      helmetica-monitoring-component: alertmanager
+  portName: web
+  replicas: 2
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 4m
+      memory: 100Mi
+  retention: 120h
+  secrets: []
+  serviceAccountName: alertmanager
+  version: 0.31.1

@@ -22,6 +22,10 @@ parameters:
         registry: ghcr.io
         repository: fluxcd/helm-controller
         tag: v1.6.3
+      alertmanager:
+        registry: quay.io
+        repository: prometheus/alertmanager
+        tag: v0.31.1
       prometheus:
         registry: quay.io
         repository: prometheus/prometheus
@@ -79,10 +83,22 @@ parameters:
       # Valid values: [talos, openshift4]
       platform: ""
 
-      retention: 8d
-      resources:
-        limits:
-          memory: '2Gi'
-        requests:
-          cpu: '1'
-          memory: '2Gi'
+      alertmanager:
+        replicas: 2
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 4m
+            memory: 100Mi
+        retention: 120h
+
+      prometheus:
+        retention: 8d
+        resources:
+          limits:
+            memory: '2Gi'
+          requests:
+            cpu: '1'
+            memory: '2Gi'

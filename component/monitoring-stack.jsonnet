@@ -11,7 +11,8 @@ if params.monitoring_stack.enabled then
       metadata+: com.makeMergeable(params.monitoring_stack.namespaceMetadata),
     },
     '05_operator': import './prometheus/operator.jsonnet',
-    '15_stack': import './prometheus/stack.jsonnet',
+    '15_prometheus': import './prometheus/prometheus.jsonnet',
+    '14_alertmanager': import './prometheus/alertmanager.jsonnet',
     '25_kubernetes': import './prometheus/kubernetes.jsonnet',
   }
 else

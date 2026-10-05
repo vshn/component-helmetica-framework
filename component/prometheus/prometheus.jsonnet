@@ -131,10 +131,20 @@ local trimPrefix(str, prefix) =
       },
     },
     spec: {
+      alerting: {
+        alertmanagers: [
+          {
+            apiVersion: 'v2',
+            name: 'alertmanager',
+            namespace: params.monitoring_stack.namespace,
+            port: 'web',
+          },
+        ],
+      },
       serviceAccountName: 'prometheus-stack',
       replicas: 1,
-      resources: params.monitoring_stack.resources,
-      retention: params.monitoring_stack.retention,
+      resources: params.monitoring_stack.prometheus.resources,
+      retention: params.monitoring_stack.prometheus.retention,
       rules: {
         alert: {},
       },

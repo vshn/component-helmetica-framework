@@ -50,6 +50,12 @@ metadata:
   name: stack
   namespace: syn-helmetica-framework-monitoring
 spec:
+  alerting:
+    alertmanagers:
+      - apiVersion: v2
+        name: alertmanager
+        namespace: syn-helmetica-framework-monitoring
+        port: web
   enforcedNamespaceLabel: namespace
   excludedFromEnforcement:
     - group: monitoring.coreos.com
@@ -81,15 +87,21 @@ spec:
   ruleSelector: {}
   rules:
     alert: {}
+  scrapeClasses:
+    - name: tls-client-certificate-auth
+      tlsConfig:
+        ca: {}
+        cert: {}
+        certFile: /etc/prometheus/secrets/ocp-metrics-client-certs/tls.crt
+        insecureSkipVerify: true
+        keyFile: /etc/prometheus/secrets/ocp-metrics-client-certs/tls.key
   scrapeConfigNamespaceSelector:
     matchExpressions:
       - key: helmetica.io/monitoring
         operator: Exists
   scrapeInterval: 30s
-  securityContext:
-    fsGroup: 2000
-    runAsNonRoot: true
-    runAsUser: 1000
+  secrets:
+    - ocp-metrics-client-certs
   serviceAccountName: prometheus-stack
   serviceMonitorNamespaceSelector:
     matchExpressions:
