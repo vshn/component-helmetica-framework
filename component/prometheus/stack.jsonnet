@@ -16,7 +16,15 @@ local nsSelector = {
 
 local platformSpecificConfig =
   if prom.platform == prom.PlatformTalos then
-    {}
+    {
+      spec+: {
+        securityContext+: {
+          fsGroup: 2000,
+          runAsNonRoot: true,
+          runAsUser: 1000,
+        },
+      },
+    }
   else if prom.platform == prom.PlatformOpenShift4 then
     {
       spec+: {
