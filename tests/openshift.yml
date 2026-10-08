@@ -1,0 +1,5 @@
+parameters:
+  helmetica_framework:
+    monitoring_stack:
+      enabled: true
+      platform: openshift4

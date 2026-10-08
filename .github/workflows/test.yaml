@@ -33,6 +33,8 @@ jobs:
       matrix:
         instance:
           - defaults
+          - openshift
+          - talos
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
@@ -48,6 +50,8 @@ jobs:
       matrix:
         instance:
           - defaults
+          - openshift
+          - talos
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}

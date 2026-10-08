@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations: {}
+  labels:
+    name: testicular
+  name: testicular
+spec:
+  groups:
+    - name: testicular.rules
+      rules:
+        - alert: TesticularAlert
+          annotations:
+            summary: Test alert
+          expr: vector(1)
+          for: 5m
+          labels:
+            severity: warning
+        - record: testicular:record
+          expr: vector(1)
+          labels:
+            severity: warning

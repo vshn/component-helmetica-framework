@@ -1,5 +1,10 @@
 parameters:
   kapitan:
+    dependencies:
+      - type: https
+        source: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/tags/${helmetica_framework:monitoring_stack:version}/bundle.yaml
+        output_path: dependencies/helmetica-framework/manifests/prometheus-operator/${helmetica_framework:monitoring_stack:version}/bundle/bundle.yaml
+
     compile:
       - input_paths:
           - ${_base_directory}/component/app.jsonnet
@@ -9,6 +14,10 @@ parameters:
           - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
         output_path: helmetica-framework/
+      - input_paths:
+          - ${_base_directory}/component/monitoring-stack.jsonnet
+        input_type: jsonnet
+        output_path: helmetica-framework/monitoring/prometheus
       - input_paths:
           - ${_base_directory}/component/kustomize.jsonnet
         input_type: jsonnet
