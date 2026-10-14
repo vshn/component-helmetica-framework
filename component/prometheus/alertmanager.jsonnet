@@ -36,6 +36,31 @@ local trimPrefix(str, prefix) =
   else
     str;
 
+local globalNullRoute = {
+  apiVersion: 'monitoring.coreos.com/v1beta1',
+  kind: 'AlertmanagerConfig',
+  metadata: {
+    name: 'global-null-route',
+  },
+  spec: {
+    receivers: [
+      {
+        name: 'null',
+      },
+    ],
+    route: {
+      groupBy: [
+        'alertname',
+      ],
+      groupInterval: '5s',
+      groupWait: '0s',
+      receiver: 'null',
+      repeatInterval: '4h',
+    },
+  },
+};
+
+
 [
   {
     apiVersion: 'v1',
@@ -101,6 +126,10 @@ local trimPrefix(str, prefix) =
       resources: params.monitoring_stack.alertmanager.resources,
       retention: params.monitoring_stack.alertmanager.retention,
       replicas: params.monitoring_stack.alertmanager.replicas,
+      alertmanagerConfiguration: {
+        name: globalNullRoute.metadata.name,
+        [if std.length(params.monitoring_stack.alertmanager.global_config) > 0 then 'global']: params.monitoring_stack.alertmanager.global_config,
+      },
     },
   } + platformSpecificConfig,
 ]

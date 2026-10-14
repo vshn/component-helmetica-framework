@@ -39,6 +39,8 @@ parameters:
         repository: prometheus-operator/prometheus-config-reloader
         tag: v0.87.0
 
+    secrets: {}
+
     flux:
       deployed: true
       kustomize:
@@ -93,6 +95,7 @@ parameters:
             cpu: 4m
             memory: 100Mi
         retention: 120h
+        global_config: {}
 
       prometheus:
         retention: 8d
