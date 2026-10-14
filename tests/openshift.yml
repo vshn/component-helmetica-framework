@@ -1,16 +1,13 @@
 parameters:
   helmetica_framework:
-
-    secrets:
-      example-password:
-        metadata:
-          namespace: ${helmetica_framework:monitoring_stack:namespace}
-        stringData:
-          password: SOSECRETITSINGIT
-
     monitoring_stack:
       enabled: true
       platform: openshift4
+
+      secrets:
+        example-password:
+          stringData:
+            password: SOSECRETITSINGIT
 
       alertmanager:
         global_config:

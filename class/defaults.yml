@@ -85,6 +85,8 @@ parameters:
       # Valid values: [talos, openshift4]
       platform: ""
 
+      secrets: {}
+
       alertmanager:
         replicas: 2
         resources:

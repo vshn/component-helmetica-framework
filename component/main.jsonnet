@@ -7,5 +7,10 @@ local inv = kap.inventory();
 local params = inv.parameters.helmetica_framework;
 
 {
-  '10_secrets': com.generateResources(params.secrets, kube.Secret),
+  '10_secrets': com.generateResources(params.secrets, function(name) kube.Secret(name) {
+    metadata+: { namespace: params.namespace },
+  }),
+  '11_secrets_monitoring': com.generateResources(params.monitoring_stack.secrets, function(name) kube.Secret(name) {
+    metadata+: { namespace: params.monitoring_stack.namespace },
+  }),
 }
