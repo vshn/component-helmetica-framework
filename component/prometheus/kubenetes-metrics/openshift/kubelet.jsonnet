@@ -1,105 +1,12 @@
 local kube = import 'kube-ssa-compat.libsonnet';
 local kap = import 'lib/kapitan.libjsonnet';
 local inv = kap.inventory();
+local kubelet = import '../kubelet.libsonnet';
 // The hiera parameters for the component
 local params = inv.parameters.helmetica_framework;
 
 [
-  {
-    apiVersion: 'monitoring.coreos.com/v1',
-    kind: 'ServiceMonitor',
-    metadata: {
-      name: 'kubelet',
-      namespace: params.monitoring_stack.namespace,
-    },
-    spec: {
-      attachMetadata: {
-        node: true,
-      },
-      endpoints: [
-        {
-          honorLabels: true,
-          honorTimestamps: true,
-          interval: '30s',
-          metricRelabelings: [
-            {
-              action: 'keep',
-              regex: 'container_memory_working_set_bytes',
-              sourceLabels: [
-                '__name__',
-              ],
-            },
-            {
-              action: 'keep',
-              regex: '(hel|)x-.+',
-              sourceLabels: [
-                'namespace',
-              ],
-            },
-          ],
-          path: '/metrics/cadvisor',
-          port: 'https-metrics',
-          relabelings: [
-            {
-              action: 'replace',
-              sourceLabels: [
-                '__metrics_path__',
-              ],
-              targetLabel: 'metrics_path',
-            },
-          ],
-          scheme: 'https',
-          scrapeTimeout: '30s',
-          trackTimestampsStaleness: true,
-        },
-        {
-          honorLabels: true,
-          interval: '30s',
-          metricRelabelings: [
-            {
-              action: 'keep',
-              regex: '(kubelet_volume_stats_.+)',
-              sourceLabels: [
-                '__name__',
-              ],
-            },
-            {
-              action: 'keep',
-              regex: '(hel|)x-.+',
-              sourceLabels: [
-                'namespace',
-              ],
-            },
-          ],
-          port: 'https-metrics',
-          relabelings: [
-            {
-              action: 'replace',
-              sourceLabels: [
-                '__metrics_path__',
-              ],
-              targetLabel: 'metrics_path',
-            },
-          ],
-          scheme: 'https',
-          scrapeTimeout: '30s',
-        },
-      ],
-      jobLabel: 'k8s-app',
-      namespaceSelector: {
-        matchNames: [
-          'kube-system',
-        ],
-      },
-      scrapeClass: 'tls-client-certificate-auth',
-      selector: {
-        matchLabels: {
-          'k8s-app': 'kubelet',
-        },
-      },
-      serviceDiscoveryRole: 'EndpointSlice',
-    },
-  },
+  kubelet.serviceMonitor('tls-client-certificate-auth'),
   {
     apiVersion: 'v1',
     kind: 'ServiceAccount',

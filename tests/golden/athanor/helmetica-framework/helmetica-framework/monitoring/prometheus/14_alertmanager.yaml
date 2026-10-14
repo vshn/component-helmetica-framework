@@ -53,3 +53,19 @@ spec:
   secrets: []
   serviceAccountName: alertmanager
   version: 0.31.1
+---
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: global-null-route
+  namespace: syn-helmetica-framework-monitoring
+spec:
+  receivers:
+    - name: 'null'
+  route:
+    groupBy:
+      - alertname
+    groupInterval: 5s
+    groupWait: 0s
+    receiver: 'null'
+    repeatInterval: 4h
