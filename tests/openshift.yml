@@ -1,5 +1,26 @@
 parameters:
   helmetica_framework:
+
+    secrets:
+      example-password:
+        metadata:
+          namespace: ${helmetica_framework:monitoring_stack:namespace}
+        stringData:
+          password: SOSECRETITSINGIT
+
     monitoring_stack:
       enabled: true
       platform: openshift4
+
+      alertmanager:
+        global_config:
+          smtp:
+            authUsername: example@example.com
+            from: example@example.com
+            requireTLS: true
+            smartHost:
+              host: smtp.ch.example.org
+              port: "465"
+            authPassword:
+              key: password
+              name: example-password

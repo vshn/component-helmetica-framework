@@ -34,6 +34,19 @@ spec:
       - key: helmetica.io/monitoring
         operator: Exists
   alertmanagerConfigSelector: {}
+  alertmanagerConfiguration:
+    global:
+      smtp:
+        authPassword:
+          key: password
+          name: example-password
+        authUsername: example@example.com
+        from: example@example.com
+        requireTLS: true
+        smartHost:
+          host: smtp.ch.example.org
+          port: '465'
+    name: global-null-route
   image: quay.io/prometheus/alertmanager:v0.31.1
   podMetadata:
     labels:

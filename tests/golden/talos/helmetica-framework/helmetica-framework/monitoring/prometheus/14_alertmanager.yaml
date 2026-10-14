@@ -34,6 +34,8 @@ spec:
       - key: helmetica.io/monitoring
         operator: Exists
   alertmanagerConfigSelector: {}
+  alertmanagerConfiguration:
+    name: global-null-route
   image: quay.io/prometheus/alertmanager:v0.31.1
   podMetadata:
     labels:
