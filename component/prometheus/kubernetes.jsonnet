@@ -7,5 +7,7 @@ local params = inv.parameters.helmetica_framework;
 
 if prom.platform == prom.PlatformOpenShift4 then
   import './kubenetes-metrics/openshift/kubelet.jsonnet'
+else if prom.platform == prom.PlatformKind then
+  import './kubenetes-metrics/kind/kubelet.jsonnet'
 else
   []

@@ -45,6 +45,24 @@ local platformSpecificConfig =
         ],
       },
     }
+  else if prom.platform == prom.PlatformKind then
+    {
+      spec+: {
+        scrapeClasses+: [
+          {
+            // The kubelet authorizes the ServiceAccount token against nodes/metrics.
+            name: 'kubelet-serviceaccount-auth',
+            authorization: {
+              credentialsFile: '/var/run/secrets/kubernetes.io/serviceaccount/token',
+            },
+            tlsConfig: {
+              // kubelet serving certificates are self-signed on kind.
+              insecureSkipVerify: true,
+            },
+          },
+        ],
+      },
+    }
   else
     {};
 
@@ -67,7 +85,7 @@ local trimPrefix(str, prefix) =
     apiVersion: 'rbac.authorization.k8s.io/v1',
     kind: 'ClusterRole',
     metadata: {
-      name: '%s:prometheus-stack' % params.monitoring_stack.namespace,
+      name: '%s:helmetica-prometheus-stack' % params.monitoring_stack.namespace,
     },
     rules: [
       {
@@ -99,7 +117,19 @@ local trimPrefix(str, prefix) =
           'watch',
         ],
       },
-    ],
+    ] + if prom.platform == prom.PlatformKind then [
+      {
+        apiGroups: [
+          '',
+        ],
+        resources: [
+          'nodes/metrics',
+        ],
+        verbs: [
+          'get',
+        ],
+      },
+    ] else [],
   },
   {
     apiVersion: 'rbac.authorization.k8s.io/v1',

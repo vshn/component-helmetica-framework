@@ -337,5 +337,7 @@ if prom.platform == prom.PlatformOpenShift4 then
   operator
 else if prom.platform == prom.PlatformTalos then
   operator
+else if prom.platform == prom.PlatformKind then
+  operator
 else
   []

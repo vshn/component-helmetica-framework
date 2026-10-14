@@ -41,6 +41,7 @@ local globalNullRoute = {
   kind: 'AlertmanagerConfig',
   metadata: {
     name: 'global-null-route',
+    namespace: params.monitoring_stack.namespace,
   },
   spec: {
     receivers: [
@@ -132,4 +133,5 @@ local globalNullRoute = {
       },
     },
   } + platformSpecificConfig,
+  globalNullRoute,
 ]

@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: chrysopoeia
+  name: chrysopoeia-serving-cert
+  namespace: syn-helmetica-framework
+spec:
+  dnsNames:
+  - chrysopoeia-webhook-service.syn-helmetica-framework.svc
+  - chrysopoeia-webhook-service.syn-helmetica-framework.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: chrysopoeia-selfsigned-issuer
+  secretName: webhook-server-cert

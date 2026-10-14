@@ -1,13 +1,13 @@
 {
   "template": "https://github.com/projectsyn/commodore-component-template.git",
-  "commit": "76c8c216d784b71423c07f0ab9c3178be479d639",
+  "commit": "30317607c9a6662aeb76bdd35d853c702e0ac663",
   "checkout": "main",
   "context": {
     "cookiecutter": {
       "name": "helmetica-framework",
       "slug": "helmetica-framework",
       "parameter_key": "helmetica_framework",
-      "test_cases": "defaults openshift talos",
+      "test_cases": "defaults openshift talos athanor",
       "add_lib": "n",
       "add_pp": "n",
       "add_golden": "y",
@@ -25,7 +25,7 @@
       "github_name": "component-helmetica-framework",
       "github_url": "https://github.com/vshn/component-helmetica-framework",
       "_template": "https://github.com/projectsyn/commodore-component-template.git",
-      "_commit": "76c8c216d784b71423c07f0ab9c3178be479d639"
+      "_commit": "30317607c9a6662aeb76bdd35d853c702e0ac663"
     }
   },
   "directory": null

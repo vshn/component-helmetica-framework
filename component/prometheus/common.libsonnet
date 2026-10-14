@@ -6,15 +6,17 @@ local params = inv.parameters.helmetica_framework;
 
 local PlatformOpenShift4 = 'openshift4';
 local PlatformTalos = 'talos';
+local PlatformKind = 'kind';
 
 local platform =
-  local allowedPlatforms = [ PlatformTalos, PlatformOpenShift4 ];
+  local allowedPlatforms = [ PlatformTalos, PlatformOpenShift4, PlatformKind ];
   assert std.contains(allowedPlatforms, params.monitoring_stack.platform) : "Invalid platform '%s' specified for monitoring_stack. Allowed values: %s" % [ params.monitoring_stack.platform, std.join(', ', allowedPlatforms) ];
   params.monitoring_stack.platform;
 
 {
   PlatformOpenShift4: PlatformOpenShift4,
   PlatformTalos: PlatformTalos,
+  PlatformKind: PlatformKind,
 
   // The platform the monitoring stack is running on.
   platform: platform,

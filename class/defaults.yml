@@ -82,7 +82,7 @@ parameters:
           helmetica.io/monitoring: system
       # Observed on APPUiO Lab OCP 4.21.32 / Wed 23 Sep 2026 10:14:15 CEST
       version: v0.87.0
-      # Valid values: [talos, openshift4]
+      # Valid values: [talos, openshift4, kind]
       platform: ""
 
       secrets: {}

@@ -35,6 +35,7 @@ jobs:
           - defaults
           - openshift
           - talos
+          - athanor
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
@@ -52,6 +53,7 @@ jobs:
           - defaults
           - openshift
           - talos
+          - athanor
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
