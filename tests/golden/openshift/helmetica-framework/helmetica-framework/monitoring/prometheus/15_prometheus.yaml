@@ -77,7 +77,7 @@ spec:
     limits:
       memory: 2Gi
     requests:
-      cpu: '1'
+      cpu: 100m
       memory: 2Gi
   retention: 8d
   ruleNamespaceSelector:
