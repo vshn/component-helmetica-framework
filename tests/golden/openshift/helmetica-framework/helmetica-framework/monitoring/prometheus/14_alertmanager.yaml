@@ -65,7 +65,7 @@ spec:
   serviceAccountName: alertmanager
   version: 0.31.1
 ---
-apiVersion: monitoring.coreos.com/v1beta1
+apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
   name: global-null-route
