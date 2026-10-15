@@ -37,7 +37,7 @@ local trimPrefix(str, prefix) =
     str;
 
 local globalNullRoute = {
-  apiVersion: 'monitoring.coreos.com/v1beta1',
+  apiVersion: 'monitoring.coreos.com/v1alpha1',
   kind: 'AlertmanagerConfig',
   metadata: {
     name: 'global-null-route',
