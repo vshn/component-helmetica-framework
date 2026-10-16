@@ -1,0 +1,27 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: adept-system/adept-serving-cert
+  name: adept-validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: adept-webhook-service
+      namespace: syn-helmetica-framework
+      path: /validate-rituals-helmetica-io-v1-maintenancewindow
+  failurePolicy: Fail
+  name: vmaintenancewindow.rituals.helmetica.io
+  rules:
+  - apiGroups:
+    - rituals.helmetica.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - maintenancewindows
+  sideEffects: None

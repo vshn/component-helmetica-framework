@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: adept
+  name: adept-serving-cert
+  namespace: syn-helmetica-framework
+spec:
+  dnsNames:
+  - adept-webhook-service.syn-helmetica-framework.svc
+  - adept-webhook-service.syn-helmetica-framework.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: adept-selfsigned-issuer
+  secretName: webhook-server-cert

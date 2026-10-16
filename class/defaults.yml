@@ -10,6 +10,22 @@ parameters:
         registry: ghcr.io
         repository: helmetica-framework/chrysopoeia
         tag: v0.1.0-dev25
+      custos:
+        registry: ghcr.io
+        repository: helmetica-framework/custos
+        tag: v0.0.2
+      ampulla:
+        registry: ghcr.io
+        repository: helmetica-framework/ampulla
+        tag: v0.0.2
+      adept:
+        registry: ghcr.io
+        repository: helmetica-framework/adept
+        tag: v0.1.0-dev5
+      sigillum:
+        registry: ghcr.io
+        repository: helmetica-framework/sigillum
+        tag: v0.0.1
       flux-source-controller:
         registry: ghcr.io
         repository: fluxcd/source-controller
@@ -70,6 +86,70 @@ parameters:
       kustomize:
         manifest: https://github.com/helmetica-framework/chrysopoeia/config/proxy
         # version: ${helmetica_framework:images:chrysopoeia:tag}
+        version: main
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    custos_crds:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/custos/config/crd
+        version: ${helmetica_framework:images:custos:tag}
+        input: {}
+
+    custos_controller:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/custos/config/default
+        # version: ${helmetica_framework:images:custos:tag}
+        version: main
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    ampulla_crds:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/ampulla/config/crd
+        version: ${helmetica_framework:images:ampulla:tag}
+        input: {}
+
+    ampulla_controller:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/ampulla/config/default
+        # version: ${helmetica_framework:images:ampulla:tag}
+        version: main
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    adept_crds:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/adept/config/crd
+        version: ${helmetica_framework:images:adept:tag}
+        input: {}
+
+    adept_controller:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/adept/config/default
+        # version: ${helmetica_framework:images:adept:tag}
+        version: main
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    sigillum_crds:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/sigillum/config/crd
+        version: ${helmetica_framework:images:sigillum:tag}
+        input: {}
+
+    sigillum_controller:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/sigillum/config/default
+        # version: ${helmetica_framework:images:sigillum:tag}
         version: main
         input:
           namespace: ${helmetica_framework:namespace}

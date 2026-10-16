@@ -37,7 +37,7 @@ local flux = com.Kustomization(
   } + com.makeMergeable(params.flux.kustomize.input),
 );
 
-local crds = com.Kustomization(
+local chrysopoeiaCRDs = com.Kustomization(
   params.chrysopoeia_crds.kustomize.manifest,
   params.chrysopoeia_crds.kustomize.version,
   {
@@ -45,7 +45,7 @@ local crds = com.Kustomization(
   {} + com.makeMergeable(params.chrysopoeia_crds.kustomize.input),
 );
 
-local controller = com.Kustomization(
+local chrysopoeiaController = com.Kustomization(
   params.chrysopoeia_controller.kustomize.manifest,
   params.chrysopoeia_controller.kustomize.version,
   {
@@ -172,12 +172,169 @@ local proxy = com.Kustomization(
   } + com.makeMergeable(params.chrysopoeia_proxy.kustomize.input),
 );
 
+local custosCRDs = com.Kustomization(
+  params.custos_crds.kustomize.manifest,
+  params.custos_crds.kustomize.version,
+  {
+  },
+  {} + com.makeMergeable(params.custos_crds.kustomize.input),
+);
+
+local custosController = com.Kustomization(
+  params.custos_controller.kustomize.manifest,
+  params.custos_controller.kustomize.version,
+  {
+    'ghcr.io/helmetica-framework/custos': {
+      newTag: params.images.custos.tag,
+      newName: '%(registry)s/%(repository)s' % params.images.custos,
+    },
+  },
+  {
+    patchesStrategicMerge: [ removeUpstreamNamespace('system') ],
+    patches: [],
+  } + com.makeMergeable(params.custos_controller.kustomize.input),
+);
+
+local ampullaCRDs = com.Kustomization(
+  params.ampulla_crds.kustomize.manifest,
+  params.ampulla_crds.kustomize.version,
+  {
+  },
+  {} + com.makeMergeable(params.ampulla_crds.kustomize.input),
+);
+
+local ampullaController = com.Kustomization(
+  params.ampulla_controller.kustomize.manifest,
+  params.ampulla_controller.kustomize.version,
+  {
+    'ghcr.io/helmetica-framework/ampulla': {
+      newTag: params.images.ampulla.tag,
+      newName: '%(registry)s/%(repository)s' % params.images.ampulla,
+    },
+  },
+  {
+    patchesStrategicMerge: [ removeUpstreamNamespace('system') ],
+    patches: [
+      {
+        target: {
+          group: 'cert-manager.io',
+          version: 'v1',
+          kind: 'Certificate',
+          name: 'ampulla-metrics-certs',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'replace',
+            path: '/spec/dnsNames',
+            value: [
+              'ampulla-controller-manager-metrics-service.%s.svc' % params.namespace,
+              'ampulla-controller-manager-metrics-service.%s.svc.cluster.local' % params.namespace,
+            ],
+          },
+        ]),
+      },
+    ],
+  } + com.makeMergeable(params.ampulla_controller.kustomize.input),
+);
+
+local adeptCRDs = com.Kustomization(
+  params.adept_crds.kustomize.manifest,
+  params.adept_crds.kustomize.version,
+  {
+  },
+  {} + com.makeMergeable(params.adept_crds.kustomize.input),
+);
+
+local adeptController = com.Kustomization(
+  params.adept_controller.kustomize.manifest,
+  params.adept_controller.kustomize.version,
+  {
+    'ghcr.io/helmetica-framework/adept': {
+      newTag: params.images.adept.tag,
+      newName: '%(registry)s/%(repository)s' % params.images.adept,
+    },
+  },
+  {
+    patchesStrategicMerge: [ removeUpstreamNamespace('system') ],
+    patches: [
+      {
+        target: {
+          group: 'cert-manager.io',
+          version: 'v1',
+          kind: 'Certificate',
+          name: 'adept-metrics-certs',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'replace',
+            path: '/spec/dnsNames',
+            value: [
+              'adept-controller-manager-metrics-service.%s.svc' % params.namespace,
+              'adept-controller-manager-metrics-service.%s.svc.cluster.local' % params.namespace,
+            ],
+          },
+        ]),
+      },
+      {
+        // Serves the pod mutating webhook of the OperatorHarness proxy injection.
+        target: {
+          group: 'cert-manager.io',
+          version: 'v1',
+          kind: 'Certificate',
+          name: 'adept-serving-cert',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'replace',
+            path: '/spec/dnsNames',
+            value: [
+              'adept-webhook-service.%s.svc' % params.namespace,
+              'adept-webhook-service.%s.svc.cluster.local' % params.namespace,
+            ],
+          },
+        ]),
+      },
+    ],
+  } + com.makeMergeable(params.adept_controller.kustomize.input),
+);
+
+local sigillumCRDs = com.Kustomization(
+  params.sigillum_crds.kustomize.manifest,
+  params.sigillum_crds.kustomize.version,
+  {
+  },
+  {} + com.makeMergeable(params.sigillum_crds.kustomize.input),
+);
+
+local sigillumController = com.Kustomization(
+  params.sigillum_controller.kustomize.manifest,
+  params.sigillum_controller.kustomize.version,
+  {
+    'ghcr.io/helmetica-framework/sigillum': {
+      newTag: params.images.sigillum.tag,
+      newName: '%(registry)s/%(repository)s' % params.images.sigillum,
+    },
+  },
+  {
+    patchesStrategicMerge: [ removeUpstreamNamespace('system') ],
+    patches: [],
+  } + com.makeMergeable(params.sigillum_controller.kustomize.input),
+);
 
 {
-  '07_chrysopoeia_crds/kustomization': crds.kustomization,
+  '07_chrysopoeia_crds/kustomization': chrysopoeiaCRDs.kustomization,
   '17_flux/kustomization': flux.kustomization,
-  '18_chrysopoeia_controller/kustomization': controller.kustomization,
+  '18_chrysopoeia_controller/kustomization': chrysopoeiaController.kustomization,
   '19_chrysopoeia_proxy/kustomization': proxy.kustomization,
+  '51_custos_crds/kustomization': custosCRDs.kustomization,
+  '52_custos_controller/kustomization': custosController.kustomization,
+  '53_ampulla_crds/kustomization': ampullaCRDs.kustomization,
+  '54_ampulla_controller/kustomization': ampullaController.kustomization,
+  '55_adept_crds/kustomization': adeptCRDs.kustomization,
+  '56_adept_controller/kustomization': adeptController.kustomization,
+  '57_sigillum_crds/kustomization': sigillumCRDs.kustomization,
+  '58_sigillum_controller/kustomization': sigillumController.kustomization,
+
   kustomization: {
     resources: [
       'https://raw.githubusercontent.com/helmetica-framework/chrysopoeia/%(version)s/config/proxy/permission-label-map-espejote.yaml' % {
@@ -187,6 +344,14 @@ local proxy = com.Kustomization(
       '17_flux',
       '18_chrysopoeia_controller',
       '19_chrysopoeia_proxy',
+      '51_custos_crds',
+      '52_custos_controller',
+      '53_ampulla_crds',
+      '54_ampulla_controller',
+      '55_adept_crds',
+      '56_adept_controller',
+      '57_sigillum_crds',
+      '58_sigillum_controller',
     ],
     patches: [
       {
