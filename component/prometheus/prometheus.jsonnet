@@ -117,6 +117,14 @@ local trimPrefix(str, prefix) =
           'watch',
         ],
       },
+      {
+        nonResourceURLs: [
+          '/metrics',
+        ],
+        verbs: [
+          'get',
+        ],
+      },
     ] + if prom.platform == prom.PlatformKind then [
       {
         apiGroups: [
