@@ -25,7 +25,7 @@ parameters:
       sigillum:
         registry: ghcr.io
         repository: helmetica-framework/sigillum
-        tag: v0.0.1
+        tag: v0.1.0
       flux-source-controller:
         registry: ghcr.io
         repository: fluxcd/source-controller
@@ -102,7 +102,7 @@ parameters:
       kustomize:
         manifest: https://github.com/helmetica-framework/custos/config/default
         # version: ${helmetica_framework:images:custos:tag}
-        version: main
+        version: ${helmetica_framework:images:custos:tag}
         input:
           namespace: ${helmetica_framework:namespace}
 
@@ -149,8 +149,7 @@ parameters:
       deployed: true
       kustomize:
         manifest: https://github.com/helmetica-framework/sigillum/config/default
-        # version: ${helmetica_framework:images:sigillum:tag}
-        version: main
+        version: ${helmetica_framework:images:sigillum:tag}
         input:
           namespace: ${helmetica_framework:namespace}
 
