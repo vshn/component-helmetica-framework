@@ -30,6 +30,8 @@ spec:
         - --metrics-bind-address=:8443
         - --leader-elect
         - --metrics-cert-path=/tmp/k8s-metrics-server/metrics-certs
+        - --default-bucket-class=cloudscale-lpg
+        - --default-bucket-access-class=cloudscale-lpg
         image: ghcr.io/helmetica-framework/ampulla:v0.0.2
         livenessProbe:
           httpGet:
