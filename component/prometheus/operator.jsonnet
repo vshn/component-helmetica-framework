@@ -30,6 +30,39 @@ local operator = [
     apiVersion: 'rbac.authorization.k8s.io/v1',
     kind: 'ClusterRole',
     metadata: {
+      labels+: {
+        'rbac.authorization.k8s.io/aggregate-to-admin': 'true',
+      },
+      name: '%s:helmetica-prometheus-instance-admin' % params.monitoring_stack.namespace,
+    },
+    rules: [
+      {
+        apiGroups: [
+          'monitoring.coreos.com',
+        ],
+        resources: [
+          'alertmanagerconfigs',
+          'scrapeconfigs',
+          'scrapeconfigs/status',
+          'servicemonitors',
+          'servicemonitors/status',
+          'podmonitors',
+          'podmonitors/status',
+          'probes',
+          'probes/status',
+          'prometheusrules',
+          'prometheusrules/status',
+        ],
+        verbs: [
+          '*',
+        ],
+      },
+    ],
+  },
+  {
+    apiVersion: 'rbac.authorization.k8s.io/v1',
+    kind: 'ClusterRole',
+    metadata: {
       name: '%s:helmetica-prometheus-operator' % params.monitoring_stack.namespace,
     },
     rules: [
