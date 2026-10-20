@@ -3,3 +3,6 @@ parameters:
     monitoring_stack:
       enabled: true
       platform: talos
+    aludel_cloudscale:
+      deployed: true
+      api_token: dummy-and-silly-token

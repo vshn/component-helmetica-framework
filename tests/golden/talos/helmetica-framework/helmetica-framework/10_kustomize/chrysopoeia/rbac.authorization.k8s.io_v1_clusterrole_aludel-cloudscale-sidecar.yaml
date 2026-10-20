@@ -1,0 +1,51 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: aludel-cloudscale-sidecar
+rules:
+- apiGroups:
+  - objectstorage.k8s.io
+  resources:
+  - buckets
+  - bucketaccesses
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+- apiGroups:
+  - objectstorage.k8s.io
+  resources:
+  - buckets/status
+  - bucketaccesses/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - objectstorage.k8s.io
+  resources:
+  - buckets/finalizers
+  - bucketaccesses/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
