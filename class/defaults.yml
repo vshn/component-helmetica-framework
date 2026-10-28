@@ -1,7 +1,7 @@
 parameters:
   helmetica_framework:
     =_metadata:
-      multi_tenant: false
+      multi_tenant: true
     namespace: syn-helmetica-framework
     namespaceMetadata: {}
 
