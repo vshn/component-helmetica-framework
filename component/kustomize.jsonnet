@@ -321,6 +321,65 @@ local sigillumController = com.Kustomization(
   } + com.makeMergeable(params.sigillum_controller.kustomize.input),
 );
 
+local libraCRDs = com.Kustomization(
+  params.libra_crds.kustomize.manifest,
+  params.libra_crds.kustomize.version,
+  {
+  },
+  {} + com.makeMergeable(params.libra_crds.kustomize.input),
+);
+
+local libraS3Env(name, key) = {
+  op: 'add',
+  path: '/spec/template/spec/containers/0/env/-',
+  value: {
+    name: name,
+    valueFrom: {
+      secretKeyRef: {
+        name: params.libra_controller.bucket.name,
+        key: key,
+      },
+    },
+  },
+};
+
+local libraController = com.Kustomization(
+  params.libra_controller.kustomize.manifest,
+  params.libra_controller.kustomize.version,
+  {
+    'ghcr.io/helmetica-framework/libra': {
+      newTag: params.images.libra.tag,
+      newName: '%(registry)s/%(repository)s' % params.images.libra,
+    },
+  },
+  {
+    patchesStrategicMerge: [ removeUpstreamNamespace('system') ],
+    patches: [
+      {
+        target: {
+          kind: 'Deployment',
+        },
+        // The upstream reads a hand-made secret `libra-s3`. The COSI secret uses other key names.
+        patch: std.manifestJson([
+          {
+            op: 'test',
+            path: '/spec/template/spec/containers/0/name',
+            value: 'manager',
+          },
+          {
+            op: 'remove',
+            path: '/spec/template/spec/containers/0/envFrom',
+          },
+          libraS3Env('S3_ENDPOINT', 'COSI_S3_ENDPOINT'),
+          libraS3Env('S3_BUCKET', 'COSI_S3_BUCKET_ID'),
+          libraS3Env('AWS_ACCESS_KEY_ID', 'COSI_S3_ACCESS_KEY_ID'),
+          libraS3Env('AWS_SECRET_ACCESS_KEY', 'COSI_S3_ACCESS_SECRET_KEY'),
+        ]),
+      },
+    ],
+  } + com.makeMergeable(params.libra_controller.kustomize.input),
+);
+
 {
   '07_chrysopoeia_crds/kustomization': chrysopoeiaCRDs.kustomization,
   '17_flux/kustomization': flux.kustomization,
@@ -334,6 +393,8 @@ local sigillumController = com.Kustomization(
   '56_adept_controller/kustomization': adeptController.kustomization,
   '57_sigillum_crds/kustomization': sigillumCRDs.kustomization,
   '58_sigillum_controller/kustomization': sigillumController.kustomization,
+  '59_libra_crds/kustomization': libraCRDs.kustomization,
+  '60_libra_controller/kustomization': libraController.kustomization,
 
   kustomization: {
     resources: [
@@ -352,6 +413,8 @@ local sigillumController = com.Kustomization(
       '56_adept_controller',
       '57_sigillum_crds',
       '58_sigillum_controller',
+      '59_libra_crds',
+      '60_libra_controller',
     ],
     patches: [
       {

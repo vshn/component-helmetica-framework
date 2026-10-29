@@ -33,6 +33,57 @@ local monitoringCR = {
   ],
 };
 
+local libraBucket = params.libra_controller.bucket;
+
+local libraBucketClaim = {
+  apiVersion: 'objectstorage.k8s.io/v1alpha2',
+  kind: 'BucketClaim',
+  metadata: {
+    name: libraBucket.name,
+    namespace: params.namespace,
+  },
+  spec: {
+    bucketClassName: libraBucket.bucketClassName,
+    protocols: [ 'S3' ],
+  },
+};
+
+local libraBucketAccess = {
+  apiVersion: 'objectstorage.k8s.io/v1alpha2',
+  kind: 'BucketAccess',
+  metadata: {
+    name: libraBucket.name,
+    namespace: params.namespace,
+  },
+  spec: {
+    bucketAccessClassName: libraBucket.bucketAccessClassName,
+    protocol: 'S3',
+    bucketClaims: [
+      {
+        bucketClaimName: libraBucket.name,
+        accessMode: 'ReadWrite',
+        accessSecretName: libraBucket.name,
+      },
+    ],
+  },
+};
+
+local platformCluster = kube.ConfigMap('platform-cluster') {
+  metadata+: {
+    namespace: params.namespace,
+    annotations: {
+      'chrysopoeia.io/platform-values': '0',
+    },
+  },
+  data: {
+    'values.json': std.manifestJson({
+      'io.vshn.cluster/v1alpha1': {
+        name: inv.parameters.cluster.name,
+      },
+    }),
+  },
+};
+
 {
   '10_secrets': com.generateResources(params.secrets, function(name) kube.Secret(name) {
     metadata+: { namespace: params.namespace },
@@ -41,4 +92,6 @@ local monitoringCR = {
     metadata+: { namespace: params.monitoring_stack.namespace },
   }),
   '12_monitoring_clusterrole': monitoringCR,
+  '13_libra_bucket': [ libraBucketClaim, libraBucketAccess ],
+  '14_platform_cluster': platformCluster,
 }

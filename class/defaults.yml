@@ -26,6 +26,10 @@ parameters:
         registry: ghcr.io
         repository: helmetica-framework/sigillum
         tag: v0.1.1
+      libra:
+        registry: ghcr.io
+        repository: helmetica-framework/libra
+        tag: v0.0.1
       flux-source-controller:
         registry: ghcr.io
         repository: fluxcd/source-controller
@@ -152,6 +156,25 @@ parameters:
         version: ${helmetica_framework:images:sigillum:tag}
         input:
           namespace: ${helmetica_framework:namespace}
+
+    libra_crds:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/libra/config/crd
+        version: ${helmetica_framework:images:libra:tag}
+        input: {}
+
+    libra_controller:
+      deployed: true
+      kustomize:
+        manifest: https://github.com/helmetica-framework/libra/config/default
+        version: ${helmetica_framework:images:libra:tag}
+        input:
+          namespace: ${helmetica_framework:namespace}
+      bucket:
+        name: libra-billing
+        bucketClassName: ""
+        bucketAccessClassName: ""
 
     monitoring_stack:
       enabled: false

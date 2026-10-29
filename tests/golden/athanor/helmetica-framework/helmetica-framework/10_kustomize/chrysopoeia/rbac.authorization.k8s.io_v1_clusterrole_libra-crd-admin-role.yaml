@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+  name: libra-crd-admin-role
+rules:
+- apiGroups:
+  - libra.helmetica.io
+  resources:
+  - billingdata
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - libra.helmetica.io
+  resources:
+  - billingdata/status
+  verbs:
+  - get
