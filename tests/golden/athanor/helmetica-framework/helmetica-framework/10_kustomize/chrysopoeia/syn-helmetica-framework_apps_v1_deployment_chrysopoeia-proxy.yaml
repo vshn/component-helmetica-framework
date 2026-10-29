@@ -27,7 +27,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/helmetica-framework/chrysopoeia:v0.1.0-dev25
+        image: ghcr.io/helmetica-framework/chrysopoeia:v0.1.0-dev26
         livenessProbe:
           httpGet:
             path: /_healthz
