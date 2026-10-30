@@ -61,7 +61,9 @@ local libraBucketAccess = {
     bucketClaims: [
       {
         bucketClaimName: libraBucket.name,
-        accessMode: 'ReadWrite',
+        accessModes: {
+          objectData: 'ReadWrite',
+        },
         accessSecretName: libraBucket.name,
       },
     ],

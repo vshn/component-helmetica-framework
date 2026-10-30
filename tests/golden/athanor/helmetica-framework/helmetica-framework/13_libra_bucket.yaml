@@ -16,7 +16,8 @@ metadata:
 spec:
   bucketAccessClassName: garage
   bucketClaims:
-    - accessMode: ReadWrite
+    - accessModes:
+        objectData: ReadWrite
       accessSecretName: libra-billing
       bucketClaimName: libra-billing
   protocol: S3
