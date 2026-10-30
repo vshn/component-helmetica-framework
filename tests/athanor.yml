@@ -3,3 +3,7 @@ parameters:
     monitoring_stack:
       enabled: true
       platform: kind
+    libra_controller:
+      bucket:
+        bucketClassName: garage
+        bucketAccessClassName: garage

@@ -1,0 +1,22 @@
+apiVersion: objectstorage.k8s.io/v1alpha2
+kind: BucketClaim
+metadata:
+  name: libra-billing
+  namespace: syn-helmetica-framework
+spec:
+  bucketClassName: garage
+  protocols:
+    - S3
+---
+apiVersion: objectstorage.k8s.io/v1alpha2
+kind: BucketAccess
+metadata:
+  name: libra-billing
+  namespace: syn-helmetica-framework
+spec:
+  bucketAccessClassName: garage
+  bucketClaims:
+    - accessMode: ReadWrite
+      accessSecretName: libra-billing
+      bucketClaimName: libra-billing
+  protocol: S3
