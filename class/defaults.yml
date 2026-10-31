@@ -9,7 +9,7 @@ parameters:
       chrysopoeia:
         registry: ghcr.io
         repository: helmetica-framework/chrysopoeia
-        tag: v0.1.0-dev28
+        tag: v0.1.0-dev29
       custos:
         registry: ghcr.io
         repository: helmetica-framework/custos
