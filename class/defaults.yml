@@ -9,7 +9,7 @@ parameters:
       chrysopoeia:
         registry: ghcr.io
         repository: helmetica-framework/chrysopoeia
-        tag: v0.1.0-dev31
+        tag: v0.1.0-dev32
       custos:
         registry: ghcr.io
         repository: helmetica-framework/custos
@@ -80,8 +80,7 @@ parameters:
       deployed: true
       kustomize:
         manifest: https://github.com/helmetica-framework/chrysopoeia/config/default
-        # version: ${helmetica_framework:images:chrysopoeia:tag}
-        version: main
+        version: ${helmetica_framework:images:chrysopoeia:tag}
         input:
           namespace: ${helmetica_framework:namespace}
 
@@ -89,8 +88,7 @@ parameters:
       deployed: true
       kustomize:
         manifest: https://github.com/helmetica-framework/chrysopoeia/config/proxy
-        # version: ${helmetica_framework:images:chrysopoeia:tag}
-        version: main
+        version: ${helmetica_framework:images:chrysopoeia:tag}
         input:
           namespace: ${helmetica_framework:namespace}
 
