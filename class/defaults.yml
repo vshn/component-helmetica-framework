@@ -58,6 +58,10 @@ parameters:
         registry: quay.io
         repository: prometheus-operator/prometheus-config-reloader
         tag: v0.87.0
+      aludel-cloudscale:
+        registry: ghcr.io
+        repository: helmetica-framework/aludel-cloudscale
+        tag: pr-11
 
     secrets: {}
 
@@ -125,6 +129,12 @@ parameters:
         version: main
         input:
           namespace: ${helmetica_framework:namespace}
+      # BucketClass and BucketAccessClass used for policies that don't name
+      # their own. The upstream base sets none. null falls back to the
+      # aludel_cloudscale defaults if the driver is deployed, and leaves the
+      # flag unset otherwise.
+      default_bucket_class: null
+      default_bucket_access_class: null
 
     adept_crds:
       deployed: true
@@ -175,6 +185,44 @@ parameters:
         name: libra-billing
         bucketClassName: ""
         bucketAccessClassName: ""
+
+    cosi:
+      deployed: ${helmetica_framework:aludel_cloudscale:deployed}
+      kustomize:
+        manifest: https://github.com/helmetica-framework/aludel-cloudscale/config/crd
+        # The COSI CRDs, controller and sidecar images are pinned by aludel-cloudscale
+        # itself and must come from the same COSI commit, so they are not overridden here.
+        # version: ${helmetica_framework:images:aludel-cloudscale:tag}
+        version: feat/cosi-v1alpha2
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    # COSI driver for cloudscale.ch object storage
+    aludel_cloudscale:
+      deployed: false
+      api_token: ?{vaultkv:${cluster:tenant}/${cluster:name}/helmetica-framework/cloudscale/token}
+      driver_name: cloudscale-objectstorage.helmetica.io
+      bucket_classes:
+        cloudscale-lpg:
+          spec:
+            deletionPolicy: Retain
+            parameters:
+              region: lpg
+        cloudscale-rma:
+          spec:
+            deletionPolicy: Retain
+            parameters:
+              region: rma
+      bucket_access_classes:
+        cloudscale-lpg: {}
+        cloudscale-rma: {}
+      default_bucket_class: cloudscale-lpg
+      default_bucket_access_class: cloudscale-lpg
+      kustomize:
+        manifest: https://github.com/helmetica-framework/aludel-cloudscale/config/manager
+        version: feat/cosi-v1alpha2
+        input:
+          namespace: ${helmetica_framework:namespace}
 
     monitoring_stack:
       enabled: false

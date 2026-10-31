@@ -203,6 +203,16 @@ local ampullaCRDs = com.Kustomization(
   {} + com.makeMergeable(params.ampulla_crds.kustomize.input),
 );
 
+// ampulla's own setting wins; otherwise use the classes aludel-cloudscale
+// creates, if it is deployed.
+local ampullaDefault(key) =
+  if params.ampulla_controller[key] != null then
+    params.ampulla_controller[key]
+  else if params.aludel_cloudscale.deployed then
+    params.aludel_cloudscale[key]
+  else
+    null;
+
 local ampullaController = com.Kustomization(
   params.ampulla_controller.kustomize.manifest,
   params.ampulla_controller.kustomize.version,
@@ -231,6 +241,32 @@ local ampullaController = com.Kustomization(
               'ampulla-controller-manager-metrics-service.%s.svc.cluster.local' % params.namespace,
             ],
           },
+        ]),
+      },
+      {
+        target: {
+          group: 'apps',
+          version: 'v1',
+          kind: 'Deployment',
+          name: 'ampulla-controller-manager',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'test',
+            path: '/spec/template/spec/containers/0/name',
+            value: 'manager',
+          },
+        ] + [
+          {
+            op: 'add',
+            path: '/spec/template/spec/containers/0/args/-',
+            value: '--%s=%s' % [ flag.name, flag.value ],
+          }
+          for flag in [
+            { name: 'default-bucket-class', value: ampullaDefault('default_bucket_class') },
+            { name: 'default-bucket-access-class', value: ampullaDefault('default_bucket_access_class') },
+          ]
+          if flag.value != null
         ]),
       },
     ],
@@ -380,6 +416,54 @@ local libraController = com.Kustomization(
   } + com.makeMergeable(params.libra_controller.kustomize.input),
 );
 
+local cosi = com.Kustomization(
+  params.cosi.kustomize.manifest,
+  params.cosi.kustomize.version,
+  {
+  },
+  {
+    patchesStrategicMerge: [ removeUpstreamNamespace('container-object-storage-system') ],
+  } + com.makeMergeable(params.cosi.kustomize.input),
+);
+
+local aludelCloudscale = com.Kustomization(
+  params.aludel_cloudscale.kustomize.manifest,
+  params.aludel_cloudscale.kustomize.version,
+  {
+    'ghcr.io/helmetica-framework/aludel-cloudscale': {
+      newTag: params.images['aludel-cloudscale'].tag,
+      newName: '%(registry)s/%(repository)s' % params.images['aludel-cloudscale'],
+    },
+  },
+  {
+    patchesStrategicMerge: [ removeUpstreamNamespace('aludel-cloudscale-system') ],
+    patches: [
+      {
+        // Upstream hardcodes the subject namespace, which the namespace
+        // transformer leaves untouched.
+        target: {
+          group: 'rbac.authorization.k8s.io',
+          version: 'v1',
+          kind: 'ClusterRoleBinding',
+          name: 'aludel-cloudscale-sidecar',
+        },
+        patch: std.manifestJson([
+          {
+            op: 'test',
+            path: '/subjects/0/name',
+            value: 'aludel-cloudscale',
+          },
+          {
+            op: 'replace',
+            path: '/subjects/0/namespace',
+            value: params.namespace,
+          },
+        ]),
+      },
+    ],
+  } + com.makeMergeable(params.aludel_cloudscale.kustomize.input),
+);
+
 {
   '07_chrysopoeia_crds/kustomization': chrysopoeiaCRDs.kustomization,
   '17_flux/kustomization': flux.kustomization,
@@ -395,6 +479,8 @@ local libraController = com.Kustomization(
   '58_sigillum_controller/kustomization': sigillumController.kustomization,
   '59_libra_crds/kustomization': libraCRDs.kustomization,
   '60_libra_controller/kustomization': libraController.kustomization,
+  [if params.cosi.deployed then '59_cosi/kustomization']: cosi.kustomization,
+  [if params.aludel_cloudscale.deployed then '60_aludel_cloudscale/kustomization']: aludelCloudscale.kustomization,
 
   kustomization: {
     resources: [
@@ -415,7 +501,11 @@ local libraController = com.Kustomization(
       '58_sigillum_controller',
       '59_libra_crds',
       '60_libra_controller',
-    ],
+    ] + (
+      if params.cosi.deployed then [ '59_cosi' ] else []
+    ) + (
+      if params.aludel_cloudscale.deployed then [ '60_aludel_cloudscale' ] else []
+    ),
     patches: [
       {
         target: {
