@@ -1,0 +1,13 @@
+apiVersion: rituals.helmetica.io/v1
+kind: MaintenanceWindow
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  name: default
+spec:
+  daysOfWeek:
+    - wednesday
+  default: true
+  duration: 6h
+  time: '22:00'
+  timeZone: Europe/Zurich
