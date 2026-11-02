@@ -30,7 +30,7 @@ spec:
         - --metrics-bind-address=:8443
         - --leader-elect
         - --metrics-cert-path=/tmp/k8s-metrics-server/metrics-certs
-        image: ghcr.io/helmetica-framework/ampulla:v0.0.2
+        image: ghcr.io/helmetica-framework/ampulla:v0.1.1
         livenessProbe:
           httpGet:
             path: /healthz
@@ -78,4 +78,4 @@ spec:
           - key: tls.key
             path: tls.key
           optional: false
-          secretName: metrics-server-cert
+          secretName: ampulla-metrics-server-cert

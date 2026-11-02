@@ -6,9 +6,9 @@ metadata:
   name: custos-crd-admin-role
 rules:
 - apiGroups:
-  - arcana.helmetica.io
+  - custos.helmetica.io
   resources:
-  - arcana
+  - credentialconfigs
   verbs:
   - create
   - delete
@@ -18,8 +18,8 @@ rules:
   - update
   - watch
 - apiGroups:
-  - arcana.helmetica.io
+  - custos.helmetica.io
   resources:
-  - arcana/status
+  - credentialconfigs/status
   verbs:
   - get

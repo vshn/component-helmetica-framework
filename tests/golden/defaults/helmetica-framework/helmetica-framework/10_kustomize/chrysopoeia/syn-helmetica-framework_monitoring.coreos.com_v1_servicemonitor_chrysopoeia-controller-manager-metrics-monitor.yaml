@@ -21,15 +21,15 @@ spec:
       ca:
         secret:
           key: ca.crt
-          name: metrics-server-cert
+          name: chrysopoeia-metrics-server-cert
       cert:
         secret:
           key: tls.crt
-          name: metrics-server-cert
+          name: chrysopoeia-metrics-server-cert
       insecureSkipVerify: false
       keySecret:
         key: tls.key
-        name: metrics-server-cert
+        name: chrysopoeia-metrics-server-cert
       serverName: chrysopoeia-controller-manager-metrics-service.chrysopoeia-system.svc
   selector:
     matchLabels:

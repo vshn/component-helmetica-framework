@@ -15,7 +15,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - backups.helmetica.io
+  - ampulla.helmetica.io
   resources:
   - backuppolicies
   verbs:
@@ -23,7 +23,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - backups.helmetica.io
+  - ampulla.helmetica.io
   resources:
   - backuppolicies/status
   verbs:
