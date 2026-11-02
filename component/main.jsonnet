@@ -96,4 +96,14 @@ local platformCluster = kube.ConfigMap('platform-cluster') {
   '12_monitoring_clusterrole': monitoringCR,
   '13_libra_bucket': [ libraBucketClaim, libraBucketAccess ],
   '14_platform_cluster': platformCluster,
+  '15_maintenance_windows': com.generateResources(params.adept_controller.maintenance_windows, function(name) {
+    apiVersion: 'rituals.helmetica.io/v1',
+    kind: 'MaintenanceWindow',
+    metadata: {
+      name: name,
+      annotations: {
+        'argocd.argoproj.io/sync-options': 'SkipDryRunOnMissingResource=true',
+      },
+    },
+  }),
 }

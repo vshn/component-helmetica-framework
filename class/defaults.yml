@@ -141,6 +141,14 @@ parameters:
         version: main
         input:
           namespace: ${helmetica_framework:namespace}
+      maintenance_windows:
+        default:
+          spec:
+            default: true
+            daysOfWeek: [wednesday]
+            time: "22:00"
+            duration: 6h
+            timeZone: Europe/Zurich
 
     sigillum_crds:
       deployed: true
