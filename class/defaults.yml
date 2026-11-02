@@ -24,6 +24,15 @@ parameters:
 
     secrets: {}
 
+    maintenance_windows:
+      default:
+        spec:
+          default: true
+          daysOfWeek: [tuesday]
+          time: "22:00"
+          duration: 6h
+          timeZone: Europe/Zurich
+
     # COSI driver for cloudscale.ch object storage
     aludel_cloudscale:
       deployed: false
