@@ -9,23 +9,23 @@ parameters:
       chrysopoeia:
         registry: ghcr.io
         repository: helmetica-framework/chrysopoeia
-        tag: v0.1.0-dev35
+        tag: v0.1.0
       custos:
         registry: ghcr.io
         repository: helmetica-framework/custos
-        tag: v0.0.2
+        tag: v0.1.0
       ampulla:
         registry: ghcr.io
         repository: helmetica-framework/ampulla
-        tag: v0.0.2
+        tag: v0.1.1
       adept:
         registry: ghcr.io
         repository: helmetica-framework/adept
-        tag: v0.1.0-dev5
+        tag: v0.1.0-dev7
       sigillum:
         registry: ghcr.io
         repository: helmetica-framework/sigillum
-        tag: v0.1.1
+        tag: v0.2.0
       libra:
         registry: ghcr.io
         repository: helmetica-framework/libra

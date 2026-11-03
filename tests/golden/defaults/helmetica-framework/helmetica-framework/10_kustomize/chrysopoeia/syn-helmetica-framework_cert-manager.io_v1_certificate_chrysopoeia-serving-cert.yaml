@@ -13,4 +13,4 @@ spec:
   issuerRef:
     kind: Issuer
     name: chrysopoeia-selfsigned-issuer
-  secretName: webhook-server-cert
+  secretName: chrysopoeia-webhook-server-cert

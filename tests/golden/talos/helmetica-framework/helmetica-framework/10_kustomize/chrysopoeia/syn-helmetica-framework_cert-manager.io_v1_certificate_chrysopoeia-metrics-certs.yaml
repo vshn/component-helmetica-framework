@@ -13,4 +13,4 @@ spec:
   issuerRef:
     kind: Issuer
     name: chrysopoeia-selfsigned-issuer
-  secretName: metrics-server-cert
+  secretName: chrysopoeia-metrics-server-cert
