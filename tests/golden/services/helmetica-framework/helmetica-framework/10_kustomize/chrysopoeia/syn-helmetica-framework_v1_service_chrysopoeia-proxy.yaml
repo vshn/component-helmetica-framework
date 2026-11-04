@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chrysopoeia-proxy
+  namespace: syn-helmetica-framework
+spec:
+  ports:
+  - port: 8443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    chrysopoeia-component: proxy

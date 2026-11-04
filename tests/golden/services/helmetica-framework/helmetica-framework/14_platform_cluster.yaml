@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  values.json: |-
+    {
+        "io.vshn.cluster/v1alpha1": {
+            "name": "c-green-test-1234"
+        }
+    }
+kind: ConfigMap
+metadata:
+  annotations:
+    chrysopoeia.io/platform-values: '0'
+  labels:
+    name: platform-cluster
+  name: platform-cluster
+  namespace: syn-helmetica-framework

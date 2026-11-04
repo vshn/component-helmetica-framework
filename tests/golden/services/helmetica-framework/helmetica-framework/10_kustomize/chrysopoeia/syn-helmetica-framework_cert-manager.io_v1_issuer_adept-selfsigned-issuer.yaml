@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: adept
+  name: adept-selfsigned-issuer
+  namespace: syn-helmetica-framework
+spec:
+  selfSigned: {}
