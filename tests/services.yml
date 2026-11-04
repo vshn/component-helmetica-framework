@@ -1,0 +1,133 @@
+# Overwrite parameters here
+
+parameters:
+  helmetica_framework:
+    services:
+      redis:
+        registry: registry.kube-system.svc:5000/charts/redis
+        crdNames:
+          kind: Redis
+          plural: redises
+        versions:
+          v0:
+            semver: 0.x
+
+      mariadb-crds:
+        registry: ghcr.io/mariadb-operator/charts/mariadb-operator-crds
+        crdNames:
+          kind: MariaDBOperatorCRD
+          plural: mariadboperatorcrds
+        provides:
+          - mariadb
+        versions:
+          v26:
+            semver: 26.x
+      mariadb-operator:
+        registry: ghcr.io/mariadb-operator/charts/mariadb-operator
+        crdNames:
+          kind: MariaDBOperator
+          plural: mariadboperators
+        manages:
+          - mariadb
+        versions:
+          v26:
+            semver: 26.x
+      mariadb-cluster:
+        registry: ghcr.io/mariadb-operator/charts/mariadb-cluster
+        crdNames:
+          kind: MariaDBCluster
+          plural: mariadbclusters
+        requires:
+          - mariadb
+        versions:
+          v26:
+            semver: 26.x
+      mariadb:
+        registry: registry.kube-system.svc:5000/charts/mariadb
+        crdNames:
+          kind: Mariadb
+          plural: mariadbs
+        requires:
+          - mariadb
+        versions:
+          v0:
+            semver: 0.x
+
+    dependency_groups:
+      mariadb:
+        spec:
+          harnessRef:
+            kind: OperatorHarness
+            name: mariadb
+          crds:
+            - name: backups.k8s.mariadb.com
+            - name: connections.k8s.mariadb.com
+            - name: databases.k8s.mariadb.com
+            - name: externalmariadbs.k8s.mariadb.com
+            - name: grants.k8s.mariadb.com
+            - name: mariadbs.k8s.mariadb.com
+            - name: maxscales.k8s.mariadb.com
+            - name: physicalbackups.k8s.mariadb.com
+            - name: pointintimerecoveries.k8s.mariadb.com
+            - name: restores.k8s.mariadb.com
+            - name: sqljobs.k8s.mariadb.com
+            - name: users.k8s.mariadb.com
+          rules:
+            - apiGroups: ['*']
+              resources: ['*']
+              verbs: ['*']
+          clusterRules:
+            - apiGroups: [rbac.authorization.k8s.io]
+              resources: [clusterrolebindings]
+              verbs: [create, list, patch, watch, delete]
+            - apiGroups: [authentication.k8s.io]
+              resources: [tokenreviews]
+              verbs: [create]
+            - apiGroups: [authorization.k8s.io]
+              resources: [subjectaccessreviews]
+              verbs: [create]
+            # MariaDB sets an ownerReference from a cluster scoped object to a namespaced one
+            - apiGroups: [k8s.mariadb.com]
+              resources: [mariadbs/finalizers]
+              verbs: [update, patch]
+            # The local admin role can be gone before the operator finishes de-provisioning
+            - apiGroups: [k8s.mariadb.com]
+              resources:
+                - grants
+                - grants/finalizers
+                - users
+                - users/finalizers
+                - databases
+                - databases/finalizers
+              verbs: [patch, update]
+
+    claims:
+      mariadb-crds:
+        apiVersion: v26.mariadb-crds.helmetica-bundles.io/bundle
+        kind: MariaDBOperatorCRD
+        spec:
+          approval:
+            strategy: Automatic
+          ociUrl: oci://ghcr.io/mariadb-operator/charts/mariadb-operator-crds
+          provides:
+            - dependencyGroup:
+                name: mariadb
+          version: 26.6.0
+      mariadb-operator:
+        apiVersion: v26.mariadb-operator.helmetica-bundles.io/bundle
+        kind: MariaDBOperator
+        spec:
+          approval:
+            strategy: Automatic
+          ociUrl: oci://ghcr.io/mariadb-operator/charts/mariadb-operator
+          manages:
+            - dependencyGroup:
+                name: mariadb
+          values:
+            certController:
+              enabled: false
+            rbac:
+              enabled: false
+            webhook:
+              enabled: false
+          version: 26.6.0

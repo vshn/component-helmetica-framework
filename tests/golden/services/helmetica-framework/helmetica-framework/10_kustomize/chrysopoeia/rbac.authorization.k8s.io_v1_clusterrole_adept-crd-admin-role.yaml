@@ -1,0 +1,41 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+  name: adept-crd-admin-role
+rules:
+- apiGroups:
+  - adept.helmetica.io
+  resources:
+  - actions
+  - definitions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - adept.helmetica.io
+  resources:
+  - actions/status
+  - definitions/status
+  - maintenances/status
+  verbs:
+  - get
+- apiGroups:
+  - adept.helmetica.io
+  resources:
+  - maintenancewindows
+  - maintenances
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch

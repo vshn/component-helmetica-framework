@@ -1,0 +1,34 @@
+apiVersion: v26.mariadb-crds.helmetica-bundles.io/bundle
+kind: MariaDBOperatorCRD
+metadata:
+  name: mariadb-crds
+  namespace: syn-helmetica-framework
+spec:
+  approval:
+    strategy: Automatic
+  ociUrl: oci://ghcr.io/mariadb-operator/charts/mariadb-operator-crds
+  provides:
+    - dependencyGroup:
+        name: mariadb
+  version: 26.6.0
+---
+apiVersion: v26.mariadb-operator.helmetica-bundles.io/bundle
+kind: MariaDBOperator
+metadata:
+  name: mariadb-operator
+  namespace: syn-helmetica-framework
+spec:
+  approval:
+    strategy: Automatic
+  manages:
+    - dependencyGroup:
+        name: mariadb
+  ociUrl: oci://ghcr.io/mariadb-operator/charts/mariadb-operator
+  values:
+    certController:
+      enabled: false
+    rbac:
+      enabled: false
+    webhook:
+      enabled: false
+  version: 26.6.0

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: chrysopoeia-proxy
+  namespace: syn-helmetica-framework
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          chrysopoeia.io/instance: ""
+    ports:
+    - port: 8443
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      chrysopoeia-component: proxy
+  policyTypes:
+  - Ingress

@@ -1,0 +1,261 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  labels:
+    name: mariadb
+  name: mariadb
+  namespace: syn-helmetica-framework
+spec:
+  exclusionList:
+    - ^.*\.sig$
+    - ^sha256-.+$
+  image: registry.kube-system.svc:5000/charts/mariadb
+  interval: 1h
+  provider: generic
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  labels:
+    name: mariadb-v0
+  name: mariadb-v0
+  namespace: syn-helmetica-framework
+spec:
+  interval: 1h
+  provider: generic
+  ref:
+    semver: 0.x
+  url: oci://registry.kube-system.svc:5000/charts/mariadb
+---
+apiVersion: chrysopoeia.helmetica.io/v1
+kind: ClaimDefinition
+metadata:
+  labels:
+    name: v0.mariadb
+  name: v0.mariadb
+  namespace: syn-helmetica-framework
+spec:
+  crdNames:
+    kind: Mariadb
+    plural: mariadbs
+  reference:
+    apiVersion: source.toolkit.fluxcd.io/v1
+    kind: OCIRepository
+    name: mariadb-v0
+  requires:
+    - dependencyGroup:
+        name: mariadb
+  versionDiscovery:
+    reference:
+      apiVersion: image.toolkit.fluxcd.io/v1
+      kind: ImageRepository
+      name: mariadb
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  labels:
+    name: mariadb-cluster
+  name: mariadb-cluster
+  namespace: syn-helmetica-framework
+spec:
+  exclusionList:
+    - ^.*\.sig$
+    - ^sha256-.+$
+  image: ghcr.io/mariadb-operator/charts/mariadb-cluster
+  interval: 1h
+  provider: generic
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  labels:
+    name: mariadb-cluster-v26
+  name: mariadb-cluster-v26
+  namespace: syn-helmetica-framework
+spec:
+  interval: 1h
+  provider: generic
+  ref:
+    semver: 26.x
+  url: oci://ghcr.io/mariadb-operator/charts/mariadb-cluster
+---
+apiVersion: chrysopoeia.helmetica.io/v1
+kind: ClaimDefinition
+metadata:
+  labels:
+    name: v26.mariadb-cluster
+  name: v26.mariadb-cluster
+  namespace: syn-helmetica-framework
+spec:
+  crdNames:
+    kind: MariaDBCluster
+    plural: mariadbclusters
+  reference:
+    apiVersion: source.toolkit.fluxcd.io/v1
+    kind: OCIRepository
+    name: mariadb-cluster-v26
+  requires:
+    - dependencyGroup:
+        name: mariadb
+  versionDiscovery:
+    reference:
+      apiVersion: image.toolkit.fluxcd.io/v1
+      kind: ImageRepository
+      name: mariadb-cluster
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  labels:
+    name: mariadb-crds
+  name: mariadb-crds
+  namespace: syn-helmetica-framework
+spec:
+  exclusionList:
+    - ^.*\.sig$
+    - ^sha256-.+$
+  image: ghcr.io/mariadb-operator/charts/mariadb-operator-crds
+  interval: 1h
+  provider: generic
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  labels:
+    name: mariadb-crds-v26
+  name: mariadb-crds-v26
+  namespace: syn-helmetica-framework
+spec:
+  interval: 1h
+  provider: generic
+  ref:
+    semver: 26.x
+  url: oci://ghcr.io/mariadb-operator/charts/mariadb-operator-crds
+---
+apiVersion: chrysopoeia.helmetica.io/v1
+kind: ClaimDefinition
+metadata:
+  labels:
+    name: v26.mariadb-crds
+  name: v26.mariadb-crds
+  namespace: syn-helmetica-framework
+spec:
+  crdNames:
+    kind: MariaDBOperatorCRD
+    plural: mariadboperatorcrds
+  provides:
+    - dependencyGroup:
+        name: mariadb
+  reference:
+    apiVersion: source.toolkit.fluxcd.io/v1
+    kind: OCIRepository
+    name: mariadb-crds-v26
+  versionDiscovery:
+    reference:
+      apiVersion: image.toolkit.fluxcd.io/v1
+      kind: ImageRepository
+      name: mariadb-crds
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  labels:
+    name: mariadb-operator
+  name: mariadb-operator
+  namespace: syn-helmetica-framework
+spec:
+  exclusionList:
+    - ^.*\.sig$
+    - ^sha256-.+$
+  image: ghcr.io/mariadb-operator/charts/mariadb-operator
+  interval: 1h
+  provider: generic
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  labels:
+    name: mariadb-operator-v26
+  name: mariadb-operator-v26
+  namespace: syn-helmetica-framework
+spec:
+  interval: 1h
+  provider: generic
+  ref:
+    semver: 26.x
+  url: oci://ghcr.io/mariadb-operator/charts/mariadb-operator
+---
+apiVersion: chrysopoeia.helmetica.io/v1
+kind: ClaimDefinition
+metadata:
+  labels:
+    name: v26.mariadb-operator
+  name: v26.mariadb-operator
+  namespace: syn-helmetica-framework
+spec:
+  crdNames:
+    kind: MariaDBOperator
+    plural: mariadboperators
+  manages:
+    - dependencyGroup:
+        name: mariadb
+  reference:
+    apiVersion: source.toolkit.fluxcd.io/v1
+    kind: OCIRepository
+    name: mariadb-operator-v26
+  versionDiscovery:
+    reference:
+      apiVersion: image.toolkit.fluxcd.io/v1
+      kind: ImageRepository
+      name: mariadb-operator
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  labels:
+    name: redis
+  name: redis
+  namespace: syn-helmetica-framework
+spec:
+  exclusionList:
+    - ^.*\.sig$
+    - ^sha256-.+$
+  image: registry.kube-system.svc:5000/charts/redis
+  interval: 1h
+  provider: generic
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  labels:
+    name: redis-v0
+  name: redis-v0
+  namespace: syn-helmetica-framework
+spec:
+  interval: 1h
+  provider: generic
+  ref:
+    semver: 0.x
+  url: oci://registry.kube-system.svc:5000/charts/redis
+---
+apiVersion: chrysopoeia.helmetica.io/v1
+kind: ClaimDefinition
+metadata:
+  labels:
+    name: v0.redis
+  name: v0.redis
+  namespace: syn-helmetica-framework
+spec:
+  crdNames:
+    kind: Redis
+    plural: redises
+  reference:
+    apiVersion: source.toolkit.fluxcd.io/v1
+    kind: OCIRepository
+    name: redis-v0
+  versionDiscovery:
+    reference:
+      apiVersion: image.toolkit.fluxcd.io/v1
+      kind: ImageRepository
+      name: redis
