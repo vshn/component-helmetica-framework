@@ -4,6 +4,11 @@ local params = inv.parameters.helmetica_framework;
 local argocd = import 'lib/argocd.libjsonnet';
 
 local app = argocd.App('helmetica-framework', params.namespace) + {
+  metadata+: {
+    annotations+: {
+      'argocd.argoproj.io/compare-options': 'ServerSideDiff=true',
+    },
+  },
   spec+: {
     syncPolicy+: {
       [if std.length(params.namespaceMetadata) != 0 then 'managedNamespaceMetadata']+: params.namespaceMetadata,
