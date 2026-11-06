@@ -21,3 +21,9 @@ parameters:
             authPassword:
               key: password
               name: example-password
+    aludel_cloudscale:
+      deployed: true
+      api_token: dummy-and-silly-token
+    ampulla_controller:
+      default_bucket_class: cloudscale-rma
+      default_bucket_access_class: cloudscale-rma

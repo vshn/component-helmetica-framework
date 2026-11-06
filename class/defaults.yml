@@ -58,6 +58,10 @@ parameters:
         registry: quay.io
         repository: prometheus-operator/prometheus-config-reloader
         tag: v0.87.0
+      aludel-cloudscale:
+        registry: ghcr.io
+        repository: helmetica-framework/aludel-cloudscale
+        tag: v0.0.1-dev2
 
     secrets: {}
 
@@ -123,6 +127,12 @@ parameters:
         version: main
         input:
           namespace: ${helmetica_framework:namespace}
+      # BucketClass and BucketAccessClass used for policies that don't name
+      # their own. The upstream base sets none. null falls back to the
+      # aludel_cloudscale defaults if the driver is deployed, and leaves the
+      # flag unset otherwise.
+      default_bucket_class: null
+      default_bucket_access_class: null
 
     adept_crds:
       deployed: true
@@ -173,6 +183,41 @@ parameters:
         name: libra-billing
         bucketClassName: ""
         bucketAccessClassName: ""
+
+    cosi:
+      deployed: ${helmetica_framework:aludel_cloudscale:deployed}
+      kustomize:
+        manifest: https://github.com/helmetica-framework/aludel-cloudscale/config/crd
+        version: ${helmetica_framework:images:aludel-cloudscale:tag}
+        input:
+          namespace: ${helmetica_framework:namespace}
+
+    # COSI driver for cloudscale.ch object storage
+    aludel_cloudscale:
+      deployed: false
+      api_token: ?{vaultkv:${cluster:tenant}/${cluster:name}/helmetica-framework/cloudscale/token}
+      driver_name: cloudscale-objectstorage.helmetica.io
+      bucket_classes:
+        cloudscale-lpg:
+          spec:
+            deletionPolicy: Retain
+            parameters:
+              region: lpg
+        cloudscale-rma:
+          spec:
+            deletionPolicy: Retain
+            parameters:
+              region: rma
+      bucket_access_classes:
+        cloudscale-lpg: {}
+        cloudscale-rma: {}
+      default_bucket_class: cloudscale-lpg
+      default_bucket_access_class: cloudscale-lpg
+      kustomize:
+        manifest: https://github.com/helmetica-framework/aludel-cloudscale/config/manager
+        version: ${helmetica_framework:images:aludel-cloudscale:tag}
+        input:
+          namespace: ${helmetica_framework:namespace}
 
     monitoring_stack:
       enabled: false
