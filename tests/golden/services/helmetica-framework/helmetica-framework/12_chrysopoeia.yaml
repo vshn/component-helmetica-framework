@@ -1,0 +1,609 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: chrysopoeia
+    app.kubernetes.io/instance: controller-manager
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: serviceaccount
+    app.kubernetes.io/part-of: chrysopoeia
+  name: chrysopoeia-controller-manager
+  namespace: syn-helmetica-framework
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: chrysopoeia
+    app.kubernetes.io/instance: leader-election-role
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: role
+    app.kubernetes.io/part-of: chrysopoeia
+  name: chrysopoeia-leader-election-role
+  namespace: syn-helmetica-framework
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-view: 'true'
+  name: chrysopoeia-chrysopoeia-claimrevision-view-role
+rules:
+  - apiGroups:
+      - chrysopoeia.helmetica.io
+    resources:
+      - claimrevisions
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: chrysopoeia-dynamic-crds-admin
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: chrysopoeia-manager-role
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+      - namespaces
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - serviceaccounts
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - mutatingwebhookconfigurations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - chrysopoeia.helmetica.io
+    resources:
+      - claimdefinitions
+      - dependencygroups
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - chrysopoeia.helmetica.io
+    resources:
+      - claimdefinitions/status
+      - claimrevisions/status
+      - dependencygroups/status
+      - operatorharnesses/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - chrysopoeia.helmetica.io
+    resources:
+      - claimrevisions
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - chrysopoeia.helmetica.io
+    resources:
+      - operatorharnesses
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - helm.toolkit.fluxcd.io
+    resources:
+      - helmreleases
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - image.toolkit.fluxcd.io
+    resources:
+      - imagerepositories
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterrolebindings
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterroles
+    verbs:
+      - bind
+      - create
+      - delete
+      - escalate
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - rolebindings
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - roles
+    verbs:
+      - bind
+      - create
+      - escalate
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - source.toolkit.fluxcd.io
+    resources:
+      - ocirepositories
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: chrysopoeia-metrics-auth-role
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: chrysopoeia-metrics-reader
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: chrysopoeia
+    app.kubernetes.io/instance: leader-election-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: rolebinding
+    app.kubernetes.io/part-of: chrysopoeia
+  name: chrysopoeia-leader-election-rolebinding
+  namespace: syn-helmetica-framework
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: chrysopoeia-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: chrysopoeia-controller-manager
+    namespace: syn-helmetica-framework
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: chrysopoeia-dynamic-crds-admin-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: chrysopoeia-dynamic-crds-admin
+subjects:
+  - kind: ServiceAccount
+    name: chrysopoeia-controller-manager
+    namespace: syn-helmetica-framework
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: chrysopoeia
+    app.kubernetes.io/instance: manager-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: chrysopoeia
+  name: chrysopoeia-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: chrysopoeia-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: chrysopoeia-controller-manager
+    namespace: syn-helmetica-framework
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: chrysopoeia-metrics-auth-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: chrysopoeia-metrics-auth-role
+subjects:
+  - kind: ServiceAccount
+    name: chrysopoeia-controller-manager
+    namespace: syn-helmetica-framework
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: chrysopoeia
+    control-plane: controller-manager
+  name: chrysopoeia-controller-manager-metrics-service
+  namespace: syn-helmetica-framework
+spec:
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app.kubernetes.io/name: chrysopoeia
+    control-plane: controller-manager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: chrysopoeia
+  name: chrysopoeia-webhook-service
+  namespace: syn-helmetica-framework
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
+  selector:
+    app.kubernetes.io/name: chrysopoeia
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: manager
+    app.kubernetes.io/created-by: chrysopoeia
+    app.kubernetes.io/instance: controller-manager
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: deployment
+    app.kubernetes.io/part-of: chrysopoeia
+    control-plane: controller-manager
+  name: chrysopoeia-controller-manager
+  namespace: syn-helmetica-framework
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        app.kubernetes.io/name: chrysopoeia
+        control-plane: controller-manager
+    spec:
+      containers:
+        - args:
+            - controller
+            - --metrics-bind-address=:8443
+            - --leader-elect
+            - --webhook-cert-path=/tmp/k8s-webhook-server/serving-certs
+            - --metrics-cert-path=/tmp/k8s-metrics-server/metrics-certs
+            - --image-reflector-controller-hostname=image-reflector-controller-tags.syn-helmetica-framework.svc:8090
+            - --harness-proxy-host=chrysopoeia-proxy.syn-helmetica-framework.svc
+            - --harness-proxy-ca-secret-namespace=syn-helmetica-framework
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: ghcr.io/helmetica-framework/chrysopoeia:v0.1.7
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          name: manager
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: webhook-certs
+              readOnly: true
+            - mountPath: /tmp/k8s-metrics-server/metrics-certs
+              name: metrics-certs
+              readOnly: true
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: chrysopoeia-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: chrysopoeia-webhook-server-cert
+        - name: metrics-certs
+          secret:
+            items:
+              - key: ca.crt
+                path: ca.crt
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+            optional: false
+            secretName: chrysopoeia-metrics-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: chrysopoeia
+  name: chrysopoeia-metrics-certs
+  namespace: syn-helmetica-framework
+spec:
+  dnsNames:
+    - chrysopoeia-controller-manager-metrics-service.syn-helmetica-framework.svc
+    - chrysopoeia-controller-manager-metrics-service.syn-helmetica-framework.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: chrysopoeia-selfsigned-issuer
+  secretName: chrysopoeia-metrics-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: chrysopoeia
+  name: chrysopoeia-serving-cert
+  namespace: syn-helmetica-framework
+spec:
+  dnsNames:
+    - chrysopoeia-webhook-service.syn-helmetica-framework.svc
+    - chrysopoeia-webhook-service.syn-helmetica-framework.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: chrysopoeia-selfsigned-issuer
+  secretName: chrysopoeia-webhook-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: chrysopoeia
+  name: chrysopoeia-selfsigned-issuer
+  namespace: syn-helmetica-framework
+spec:
+  selfSigned: {}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/created-by: chrysopoeia
+    app.kubernetes.io/instance: controller-manager-metrics-monitor
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: servicemonitor
+    app.kubernetes.io/part-of: chrysopoeia
+    control-plane: controller-manager
+  name: chrysopoeia-controller-manager-metrics-monitor
+  namespace: syn-helmetica-framework
+spec:
+  endpoints:
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      path: /metrics
+      port: https
+      scheme: https
+      tlsConfig:
+        ca:
+          secret:
+            key: ca.crt
+            name: chrysopoeia-metrics-server-cert
+        cert:
+          secret:
+            key: tls.crt
+            name: chrysopoeia-metrics-server-cert
+        insecureSkipVerify: false
+        keySecret:
+          key: tls.key
+          name: chrysopoeia-metrics-server-cert
+        serverName: chrysopoeia-controller-manager-metrics-service.syn-helmetica-framework.svc
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: chrysopoeia-dynamic-webhook
+webhooks: []
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: chrysopoeia-dynamic-webhook
+webhooks: []
