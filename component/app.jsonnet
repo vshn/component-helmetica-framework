@@ -7,6 +7,14 @@ local app = argocd.App('helmetica-framework', params.namespace) + {
   spec+: {
     syncPolicy+: {
       [if std.length(params.namespaceMetadata) != 0 then 'managedNamespaceMetadata']+: params.namespaceMetadata,
+      retry: {
+        limit: 5,
+        backoff: {
+          duration: '10s',
+          factor: 2,
+          maxDuration: '3m',
+        },
+      },
       syncOptions+: [
         'ServerSideApply=true',
         'CreateNamespace=true',
