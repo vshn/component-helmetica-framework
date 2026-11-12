@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+  name: chrysopoeia-chrysopoeia-claimrevision-view-role
+rules:
+- apiGroups:
+  - chrysopoeia.helmetica.io
+  resources:
+  - claimrevisions
+  verbs:
+  - get
+  - list
+  - watch
