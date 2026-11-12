@@ -252,3 +252,9 @@ parameters:
           requests:
             cpu: '100m'
             memory: '2Gi'
+
+    services: {}
+
+    dependency_groups: {}
+
+    claims: {}

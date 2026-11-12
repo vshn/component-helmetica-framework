@@ -1,0 +1,11 @@
+spec:
+  syncPolicy:
+    retry:
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
+      limit: 5
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
