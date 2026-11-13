@@ -47,7 +47,7 @@ spec:
           host: smtp.ch.example.org
           port: '465'
     name: global-null-route
-  image: quay.io/prometheus/alertmanager:v0.31.1
+  image: quay.io/prometheus/alertmanager:v0.35.0
   podMetadata:
     labels:
       helmetica-monitoring-component: alertmanager
@@ -63,7 +63,7 @@ spec:
   retention: 120h
   secrets: []
   serviceAccountName: alertmanager
-  version: 0.31.1
+  version: 0.35.0
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
