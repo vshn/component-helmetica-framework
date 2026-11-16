@@ -9,6 +9,7 @@ rules:
   - ampulla.helmetica.io
   resources:
   - backuppolicies
+  - backuptemplates
   verbs:
   - create
   - delete
@@ -21,5 +22,6 @@ rules:
   - ampulla.helmetica.io
   resources:
   - backuppolicies/status
+  - backuptemplates/status
   verbs:
   - get
