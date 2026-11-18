@@ -1,0 +1,74 @@
+apiVersion: chrysopoeia.helmetica.io/v1
+kind: DependencyGroup
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+  labels:
+    name: mariadb
+  name: mariadb
+spec:
+  clusterRules:
+    - apiGroups:
+        - rbac.authorization.k8s.io
+      resources:
+        - clusterrolebindings
+      verbs:
+        - create
+        - list
+        - patch
+        - watch
+        - delete
+    - apiGroups:
+        - authentication.k8s.io
+      resources:
+        - tokenreviews
+      verbs:
+        - create
+    - apiGroups:
+        - authorization.k8s.io
+      resources:
+        - subjectaccessreviews
+      verbs:
+        - create
+    - apiGroups:
+        - k8s.mariadb.com
+      resources:
+        - mariadbs/finalizers
+      verbs:
+        - update
+        - patch
+    - apiGroups:
+        - k8s.mariadb.com
+      resources:
+        - grants
+        - grants/finalizers
+        - users
+        - users/finalizers
+        - databases
+        - databases/finalizers
+      verbs:
+        - patch
+        - update
+  crds:
+    - name: backups.k8s.mariadb.com
+    - name: connections.k8s.mariadb.com
+    - name: databases.k8s.mariadb.com
+    - name: externalmariadbs.k8s.mariadb.com
+    - name: grants.k8s.mariadb.com
+    - name: mariadbs.k8s.mariadb.com
+    - name: maxscales.k8s.mariadb.com
+    - name: physicalbackups.k8s.mariadb.com
+    - name: pointintimerecoveries.k8s.mariadb.com
+    - name: restores.k8s.mariadb.com
+    - name: sqljobs.k8s.mariadb.com
+    - name: users.k8s.mariadb.com
+  harnessRef:
+    kind: OperatorHarness
+    name: mariadb
+  rules:
+    - apiGroups:
+        - '*'
+      resources:
+        - '*'
+      verbs:
+        - '*'
