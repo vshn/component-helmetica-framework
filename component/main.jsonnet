@@ -146,4 +146,14 @@ local bucketAccessClasses = com.generateResources(
   '14_platform_cluster': platformCluster,
   [if params.aludel_cloudscale.deployed then '13_aludel_cloudscale_credentials']: aludelCredentials,
   [if params.aludel_cloudscale.deployed then '14_aludel_cloudscale_classes']: bucketClasses + bucketAccessClasses,
+  '15_maintenance_windows': com.generateResources(params.maintenance_windows, function(name) {
+    apiVersion: 'rituals.helmetica.io/v1',
+    kind: 'MaintenanceWindow',
+    metadata: {
+      name: name,
+      annotations: {
+        'argocd.argoproj.io/sync-options': 'SkipDryRunOnMissingResource=true',
+      },
+    },
+  }),
 }
