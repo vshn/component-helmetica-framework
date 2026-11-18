@@ -1,0 +1,200 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    objectstorage.k8s.io/authors: Kubernetes Authors
+    objectstorage.k8s.io/license: Apache V2
+    objectstorage.k8s.io/support: https://github.com/kubernetes-sigs/container-object-storage-api
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: container-object-storage-interface-controller
+    app.kubernetes.io/part-of: container-object-storage-interface
+  name: container-object-storage-controller-sa
+  namespace: syn-helmetica-framework
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    objectstorage.k8s.io/authors: Kubernetes Authors
+    objectstorage.k8s.io/license: Apache V2
+    objectstorage.k8s.io/support: https://github.com/kubernetes-sigs/container-object-storage-api
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: container-object-storage-interface-controller
+    app.kubernetes.io/part-of: container-object-storage-interface
+    app.kubernetes.io/version: main
+  name: container-object-storage-controller
+  namespace: syn-helmetica-framework
+rules:
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - watch
+      - list
+      - delete
+      - update
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    objectstorage.k8s.io/authors: Kubernetes Authors
+    objectstorage.k8s.io/license: Apache V2
+    objectstorage.k8s.io/support: https://github.com/kubernetes-sigs/container-object-storage-api
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: container-object-storage-interface-controller
+    app.kubernetes.io/part-of: container-object-storage-interface
+  name: container-object-storage-controller-role
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+  - apiGroups:
+      - objectstorage.k8s.io
+    resources:
+      - bucketaccessclasses
+      - bucketclasses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - objectstorage.k8s.io
+    resources:
+      - bucketaccesses
+      - bucketclaims
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - objectstorage.k8s.io
+    resources:
+      - bucketaccesses/finalizers
+      - bucketclaims/finalizers
+      - buckets/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - objectstorage.k8s.io
+    resources:
+      - bucketaccesses/status
+      - bucketclaims/status
+      - buckets/status
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - objectstorage.k8s.io
+    resources:
+      - buckets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    objectstorage.k8s.io/authors: Kubernetes Authors
+    objectstorage.k8s.io/license: Apache V2
+    objectstorage.k8s.io/support: https://github.com/kubernetes-sigs/container-object-storage-api
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: container-object-storage-interface-controller
+    app.kubernetes.io/part-of: container-object-storage-interface
+    app.kubernetes.io/version: main
+  name: container-object-storage-controller
+  namespace: syn-helmetica-framework
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: container-object-storage-controller
+subjects:
+  - kind: ServiceAccount
+    name: container-object-storage-controller-sa
+    namespace: syn-helmetica-framework
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    objectstorage.k8s.io/authors: Kubernetes Authors
+    objectstorage.k8s.io/license: Apache V2
+    objectstorage.k8s.io/support: https://github.com/kubernetes-sigs/container-object-storage-api
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: container-object-storage-interface-controller
+    app.kubernetes.io/part-of: container-object-storage-interface
+    app.kubernetes.io/version: main
+  name: container-object-storage-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: container-object-storage-controller-role
+subjects:
+  - kind: ServiceAccount
+    name: container-object-storage-controller-sa
+    namespace: syn-helmetica-framework
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    objectstorage.k8s.io/authors: Kubernetes Authors
+    objectstorage.k8s.io/license: Apache V2
+    objectstorage.k8s.io/support: https://github.com/kubernetes-sigs/container-object-storage-api
+  labels:
+    app: container-object-storage-interface-controller
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: container-object-storage-interface-controller
+    app.kubernetes.io/part-of: container-object-storage-interface
+  name: container-object-storage-controller
+  namespace: syn-helmetica-framework
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-object-storage-interface-controller
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      annotations:
+        objectstorage.k8s.io/authors: Kubernetes Authors
+        objectstorage.k8s.io/license: Apache V2
+        objectstorage.k8s.io/support: https://github.com/kubernetes-sigs/container-object-storage-api
+      labels:
+        app: container-object-storage-interface-controller
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/managed-by: kustomize
+        app.kubernetes.io/name: container-object-storage-interface-controller
+        app.kubernetes.io/part-of: container-object-storage-interface
+    spec:
+      containers:
+        - args: []
+          image: gcr.io/k8s-staging-sig-storage/objectstorage-controller:v20261019-controllerv0.2.0-rc1-354-g274540c
+          name: objectstorage-controller
+      serviceAccountName: container-object-storage-controller-sa

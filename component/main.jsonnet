@@ -33,7 +33,7 @@ local monitoringCR = {
   ],
 };
 
-local libraBucket = params.libra_controller.bucket;
+local libraBucket = params.libra.bucket;
 
 local libraBucketClaim = {
   apiVersion: 'objectstorage.k8s.io/v1alpha2',

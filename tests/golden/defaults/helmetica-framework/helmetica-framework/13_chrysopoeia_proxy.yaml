@@ -1,0 +1,248 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: chrysopoeia-proxy
+  namespace: syn-helmetica-framework
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: chrysopoeia-proxy-role
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+  - apiGroups:
+      - ''
+    resources:
+      - serviceaccounts
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: chrysopoeia-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: chrysopoeia-proxy-role
+subjects:
+  - kind: ServiceAccount
+    name: chrysopoeia-proxy
+    namespace: syn-helmetica-framework
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chrysopoeia-proxy
+  namespace: syn-helmetica-framework
+spec:
+  ports:
+    - port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    chrysopoeia-component: proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    chrysopoeia-component: proxy
+  name: chrysopoeia-proxy
+  namespace: syn-helmetica-framework
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      chrysopoeia-component: proxy
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: proxy
+      labels:
+        chrysopoeia-component: proxy
+    spec:
+      containers:
+        - args:
+            - proxy
+            - --addr=:8443
+            - --cert-path=/tmp/proxy-serving-certs
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: ghcr.io/helmetica-framework/chrysopoeia:v0.1.7
+          livenessProbe:
+            httpGet:
+              path: /_healthz
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          name: proxy
+          ports: []
+          readinessProbe:
+            httpGet:
+              path: /_readyz
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - mountPath: /tmp/proxy-serving-certs
+              name: proxy-serving-certs
+              readOnly: true
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: chrysopoeia-proxy
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: proxy-serving-certs
+          secret:
+            items:
+              - key: ca.crt
+                path: ca.crt
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+            optional: false
+            secretName: proxy-serving-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: chrysopoeia
+  name: chrysopoeia-proxy-serving-cert
+  namespace: syn-helmetica-framework
+spec:
+  dnsNames:
+    - chrysopoeia-proxy.syn-helmetica-framework.svc
+    - chrysopoeia-proxy.syn-helmetica-framework.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: chrysopoeia-selfsigned-issuer
+  secretName: proxy-serving-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: chrysopoeia-proxy
+  namespace: syn-helmetica-framework
+spec:
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              chrysopoeia.io/instance: ''
+      ports:
+        - port: 8443
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      chrysopoeia-component: proxy
+  policyTypes:
+    - Ingress
+---
+apiVersion: espejote.io/v1alpha1
+kind: ClusterAdmission
+metadata:
+  annotations:
+    description: |
+      If your cluster is Kubernetes 1.36 or later, you should use the MutatingAdmissionPolicy and MutatingAdmissionPolicyBinding resources instead of this ClusterAdmission resource.
+
+      This policy ensures that all resources created in namespaces with the label "chrysopoeia.io/instance"
+      have the dependency labels starting with "requires.helmetica.io/".
+      It copies the labels from the namespace to the resource being created.
+
+      This allows the chrysopoeia proxy to filter access for operators that require cluster scoped access.
+  name: chrysopoeia-instances-namespaced-requires-labels
+spec:
+  mutating: true
+  template: |
+    local esp = import 'espejote.libsonnet';
+    local admission = esp.ALPHA.admission;
+
+    local nsObj = admission.namespaceObject();
+    local obj = admission.admissionRequest().object;
+
+    local jsonpatchEscapeKey = function(key)
+      std.strReplace(std.strReplace(key, '~', '~0'), '/', '~1');
+
+    local nsLabels = std.get(nsObj.metadata, 'labels', {});
+    local objLabels = std.get(obj.metadata, 'labels', {});
+
+    local labelsToAdd = std.filterMap(
+      function(l) std.startsWith(l, 'requires.helmetica.io/') && !std.objectHas(objLabels, l),
+      function(l) admission.jsonPatchOp(
+        'add',
+        '/metadata/labels/' + jsonpatchEscapeKey(l),
+        '',
+      ),
+      std.objectFields(nsLabels)
+    );
+
+    if std.length(labelsToAdd) == 0 then
+      admission.allowed('no labels to add')
+    else
+      local patch =
+        if !std.objectHas(obj.metadata, 'labels') then
+          [admission.jsonPatchOp('add', '/metadata/labels', {})] + labelsToAdd
+        else
+          labelsToAdd;
+      admission.patched('labels added', admission.assertPatch(patch))
+  webhookConfiguration:
+    failurePolicy: Fail
+    namespaceSelector:
+      matchExpressions:
+        - key: chrysopoeia.io/instance
+          operator: Exists
+    rules:
+      - apiGroups:
+          - '*'
+        apiVersions:
+          - '*'
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - '*'
+        scope: Namespaced

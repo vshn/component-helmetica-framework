@@ -23,6 +23,20 @@
   "suppressNotifications": [
     "artifactErrors"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Alembic version in class/defaults.yml",
+      "fileMatch": [
+        "(^|/)class/defaults\\.yml$"
+      ],
+      "matchStrings": [
+        "alembic_version: (?<currentValue>[^\\s#]+)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "helmetica-framework/alembic"
+    }
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": [

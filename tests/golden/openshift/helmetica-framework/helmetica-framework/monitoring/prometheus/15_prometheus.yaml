@@ -66,7 +66,7 @@ spec:
       namespace: syn-helmetica-framework-monitoring
       resource: servicemonitors
   ignoreNamespaceSelectors: false
-  image: quay.io/prometheus/prometheus:v3.15.0
+  image: quay.io/prometheus/prometheus:v3.16.0
   podMonitorNamespaceSelector:
     matchExpressions:
       - key: helmetica.io/monitoring
@@ -121,7 +121,7 @@ spec:
           requests:
             storage: 10Gi
       status: {}
-  version: 3.15.0
+  version: 3.16.0
   web:
     httpConfig:
       headers:

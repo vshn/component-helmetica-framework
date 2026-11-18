@@ -178,7 +178,7 @@ spec:
       containers:
         - args:
             - --kubelet-service=kube-system/kubelet
-            - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.87.0
+            - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.95.2
             - --kubelet-endpoints=true
             - --kubelet-endpointslice=true
             - --prometheus-instance-namespaces=syn-helmetica-framework-monitoring
@@ -189,7 +189,7 @@ spec:
           env:
             - name: GOGC
               value: '30'
-          image: quay.io/prometheus-operator/prometheus-operator:v0.87.0
+          image: quay.io/prometheus-operator/prometheus-operator:v0.95.2
           name: prometheus-operator
           ports:
             - containerPort: 8080
