@@ -5,7 +5,7 @@ parameters:
     namespace: syn-helmetica-framework
     namespaceMetadata: {}
     jsonnetfile_parameters:
-      alembic_version: v0.1.0
+      alembic_version: v0.1.2
 
     images: {}
 
