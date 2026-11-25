@@ -294,7 +294,7 @@ spec:
             - --metrics-cert-path=/tmp/k8s-metrics-server/metrics-certs
             - --default-bucket-class=cloudscale-rma
             - --default-bucket-access-class=cloudscale-rma
-          image: ghcr.io/helmetica-framework/ampulla:v0.1.2
+          image: ghcr.io/helmetica-framework/ampulla:v0.1.3
           livenessProbe:
             httpGet:
               path: /healthz
