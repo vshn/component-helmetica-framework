@@ -8,6 +8,7 @@ spec:
   deletionPolicy: Retain
   driverName: cloudscale-objectstorage.helmetica.io
   parameters:
+    bucketDeletionPolicy: DeleteAll
     region: lpg
 ---
 apiVersion: objectstorage.k8s.io/v1alpha2
@@ -20,6 +21,7 @@ spec:
   deletionPolicy: Retain
   driverName: cloudscale-objectstorage.helmetica.io
   parameters:
+    bucketDeletionPolicy: DeleteAll
     region: rma
 ---
 apiVersion: objectstorage.k8s.io/v1alpha2
